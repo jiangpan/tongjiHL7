@@ -525,13 +525,22 @@ public class readXML
             NodeList lenobr = (NodeList) xpath.evaluate( "/HL7Message/OBR/OBR.1/text()", document, XPathConstants.NODESET );
             // logger.info("【getFiletoDB】报告份数obr子项lenobr个数："+lenobr.getLength());
 
+            NodeList obxnodelist = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.1/text()", document, XPathConstants.NODESET );
+            int      obxitem1    = 0;
+            for( int n = 0; n < obxnodelist.getLength(); n++ )
+            {
+                if( "1".equals( obxnodelist.item( n ).getNodeValue() ) )
+                {
+                    obxitem1++;
+                }
+            }
             // 根据obx的个数判断所有报告的子项有多少
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.17/text()", document, XPathConstants.NODESET );
             int      len  = lens.getLength();
             // logger.info("【getFiletoDB】子项份数obx子项lenobx个数："+len);
-
+            int lenosbr = obxitem1 > lenobr.getLength() ? lenobr.getLength() : obxitem1;
             // 有多份报告时，先获取每份报告的子数目
-            if( lenobr.getLength() > 1 )
+            if( lenosbr > 1 )
             {
 
                 ArrayList<Integer> start = new ArrayList<Integer>();
@@ -548,7 +557,7 @@ public class readXML
                 // 转换start的位置
                 ArrayList<Integer> num        = new ArrayList<Integer>();
                 int                numforlast = 0;
-                for( int r = 1; r < lenobr.getLength(); r++ )
+                for( int r = 1; r < lenosbr; r++ )
                 {
                     num.add( start.get( r ) - start.get( r - 1 ) );
                     numforlast += start.get( r ) - start.get( r - 1 );
@@ -616,6 +625,7 @@ public class readXML
                             anti.setSPECIMEN( (String) resultss.get( i ).get( 30 ) );
                             anti.setRectime( (String) resultss.get( i ).get( 31 ) );
                             TEMPlist.add( anti );
+                            System.out.println( anti.toString() );
                         }
                     }
                     flag = DAOFactory.getLisreportDAOInstance().doCreate( TEMPlist );
@@ -635,12 +645,14 @@ public class readXML
                 if( len >= 1 )
                 {
                     ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
+                    System.out.println( "len:" + len );
+                    System.out.println( "len:" + lenobr.getLength() );
                     for( int l = 1; l <= len; l++ )
                     {
                         ArrayList<String> results = new ArrayList<String>();
                         for( String adt : adts )
                         {
-                            String replace = "/HL7Message/" + returnReplace( adt ).replace( "OBX/", "OBX[" + l + "]/" );
+                            String replace = "/HL7Message/" + returnReplace( adt ).replace( "OBR/", "OBR[" + lenobr.getLength() + "]/" ).replace( "OBX/", "OBX[" + l + "]/" );
                             String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                             results.add( temp );
                         }
@@ -668,6 +680,7 @@ public class readXML
                             anti.setREQNO( (String) resultss.get( i ).get( 13 ) );// OBR.2
                             anti.setREPNO( (String) resultss.get( i ).get( 14 ) );// OBR.3
                             anti.setOBRNAME( (String) resultss.get( i ).get( 15 ) );// OBR.4
+                            System.out.println( (String) resultss.get( i ).get( 15 ) );
                             anti.setREPTIME( (String) resultss.get( i ).get( 16 ) );// OBR.22
                             anti.setOBRSTATUS( (String) resultss.get( i ).get( 17 ) );// OBR.25
                             anti.setOBRREPNAME( (String) resultss.get( i ).get( 18 ) );// OBR.47.2

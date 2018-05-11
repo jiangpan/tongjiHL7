@@ -14,7 +14,7 @@ public class Save
     public static boolean save( String url, String content )
     {
         boolean result = false;
-        content = content.replace( "&", "$" ).replace( "EVN", "\nEVN" ).replace( "PID", "\nPID" ).replace( "PV1", "\nPV1" ).replace( "DG1", "\nDG1" ).replace( "IN1", "\nIN1" );
+        content = content.replace( "&", "$" ).replace( "EVN|", "\nEVN|" ).replace( "PID|", "\nPID|" ).replace( "PV1|", "\nPV1|" ).replace( "DG1|", "\nDG1|" ).replace( "IN1|", "\nIN1|" );
         File file = new File( url );
         try
         {

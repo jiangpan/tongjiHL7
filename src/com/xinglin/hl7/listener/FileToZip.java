@@ -7,7 +7,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -29,6 +35,36 @@ public final class FileToZip
     {
     }
 
+    public static List<File> getFilesByPathName( String sourceFilePath, String name )
+    {
+        long                    start  = System.currentTimeMillis();
+        List<File>              files  = new ArrayList<File>();
+        SimpleFileVisitor<Path> finder = new SimpleFileVisitor<Path>(){
+                                           @Override
+                                           public FileVisitResult visitFile( Path file, BasicFileAttributes attrs ) throws IOException
+                                           {
+                                               File f = file.toFile();
+                                               if( f.getName().indexOf( name ) > -1 )
+                                               {
+                                                   files.add( f );
+                                               }
+                                               return super.visitFile( file, attrs );
+                                           }
+                                       };
+
+        try
+        {
+            java.nio.file.Files.walkFileTree( Paths.get( sourceFilePath ), finder );
+        }
+        catch( IOException e )
+        {
+            logger.error( e.getMessage(), e );
+        }
+        logger.info( "本次扫描路径(" + sourceFilePath + ")下获取文件数量:" + files.size() );
+        logger.info( "扫描文件时间为:" + ( System.currentTimeMillis() - start ) );
+        return files;
+    }
+
     /**
      * 将存放在sourceFilePath目录下的源文件，打包成fileName名称的zip文件，并存放到zipFilePath路径下
      * 
@@ -39,7 +75,6 @@ public final class FileToZip
      */
     public static ArrayList<String> fileToZip( String sourceFilePath, String zipFilePath, String fileName )
     {
-
         File sourceFile = new File( sourceFilePath );
 
         FileInputStream     fis            = null;
@@ -62,9 +97,10 @@ public final class FileToZip
                 }
                 else
                 {
-                    File[] sourceFiles = sourceFile.listFiles();
+                    List<File> sourceFiles = getFilesByPathName( sourceFilePath, fileName.split( "_" )[0] );
+                    // File[] sourceFiles = sourceFile.listFiles();
 
-                    if( null == sourceFiles || sourceFiles.length < 1 )
+                    if( null == sourceFiles || sourceFiles.size() < 1 )
                     {
                         logger.error( "【FileToZip】" + "待压缩的文件目录：" + "待压缩的文件目录：" + sourceFilePath + "里面不存在文件，无需压缩." );
                     }
@@ -73,25 +109,22 @@ public final class FileToZip
                         fos = new FileOutputStream( zipFile );
                         zos = new ZipOutputStream( new BufferedOutputStream( fos ) );
                         byte[] bufs = new byte[1024 * 10];
-                        for( int i = 0; i < sourceFiles.length; i++ )
+                        for( int i = 0; i < sourceFiles.size(); i++ )
                         {
-                            if( sourceFiles[i].getName().contains( fileName.split( "_" )[0] ) )
+                            // 创建ZIP实体，并添加进压缩包
+                            ZipEntry zipEntry = new ZipEntry( sourceFiles.get( i ).getName() );
+                            zos.putNextEntry( zipEntry );
+                            // 读取待压缩的文件并写进压缩包里
+                            fis = new FileInputStream( sourceFiles.get( i ) );
+                            bis = new BufferedInputStream( fis, 1024 * 10 );
+                            int read = 0;
+                            while( ( read = bis.read( bufs, 0, 1024 * 10 ) ) != -1 )
                             {
-                                // 创建ZIP实体，并添加进压缩包
-                                ZipEntry zipEntry = new ZipEntry( sourceFiles[i].getName() );
-                                zos.putNextEntry( zipEntry );
-                                // 读取待压缩的文件并写进压缩包里
-                                fis = new FileInputStream( sourceFiles[i] );
-                                bis = new BufferedInputStream( fis, 1024 * 10 );
-                                int read = 0;
-                                while( ( read = bis.read( bufs, 0, 1024 * 10 ) ) != -1 )
-                                {
-                                    zos.write( bufs, 0, read );
-                                }
-                                deleteFileName.add( sourceFiles[i].getName() );
-                                fis.close();
-                                bis.close();
+                                zos.write( bufs, 0, read );
                             }
+                            deleteFileName.add( sourceFiles.get( i ).getName() );
+                            fis.close();
+                            bis.close();
                         }
                     }
                 }
@@ -138,10 +171,5 @@ public final class FileToZip
             }
         }
         return deleteFileName;
-    }
-
-    public static void main( String[] args )
-    {
-
     }
 }

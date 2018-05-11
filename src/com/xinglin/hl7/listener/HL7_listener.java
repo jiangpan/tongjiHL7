@@ -7,6 +7,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -161,10 +162,18 @@ class ReadHandlerThread implements Runnable
             {
                 // 读取客户端数据
 
-                SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd_HHmmss" );// 设置日期格式
+                SimpleDateFormat df       = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
+                SimpleDateFormat df2      = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:sss" );
+                SimpleDateFormat df3      = new SimpleDateFormat( "yyyy\\MM\\dd\\HH\\" );
+                String           fileTime = df.format( new Date() );
+                String           filePath = df3.format( new Date() );
 
-                SimpleDateFormat df2      = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:sss" );// 设置日期格式
-                String           filetime = df.format( new Date() );
+                File saveFile = new File( "d:/runtime/hl7/files/" + filePath );
+
+                if( saveFile.exists() == false )
+                {
+                    saveFile.mkdirs();
+                }
 
                 logger.info( "【ReadHandlerThread】此次收到原始内容为：" + reciver );
                 // 处理掉开头字符
@@ -190,16 +199,16 @@ class ReadHandlerThread implements Runnable
                     text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到结尾字符" + reciver.getBytes()[0] + "\n" );
                     text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到的全部内容为：\n" + input + "\n" );
                     // 保存文件
-                    boolean result = Save.save( "d:/runtime/hl7/files/" + filetime + mshtypename + "_" + i + ".txt", input );
+                    boolean result = Save.save( saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt", input );
 
                     if( result )
                     {
-                        logger.info( "【ReadHandlerThread】文件保存为d:/runtime/hl7/files/" + filetime + mshtypename + "_" + i + ".txt" );
+                        logger.info( "【ReadHandlerThread】文件保存为" + saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt" );
                         // String type = analysis.toXml( input, filetime + mshtypename + "_" + i + ".txt" );
 
-                        String            type = analysis.readFile( "d:/runtime/hl7/files/" + filetime + mshtypename + "_" + i + ".txt" );
-                        ArrayList<String> ack  = readConfig.CreateAck( "d:/runtime/hl7/typexml/" + type + "_" + filetime + mshtypename + "_" + i + ".txt.xml" );
-                        filename = "d:/runtime/hl7/typexml/" + type + "_" + filetime + mshtypename + "_" + i + ".txt.xml";
+                        String            type = analysis.readFile( saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt" );
+                        ArrayList<String> ack  = readConfig.CreateAck( "d:/runtime/hl7/typexml/" + type + "_" + fileTime + mshtypename + "_" + i + ".txt.xml" );
+                        filename = "d:/runtime/hl7/typexml/" + type + "_" + fileTime + mshtypename + "_" + i + ".txt.xml";
                         DataOutputStream dos = null;
                         dos = new DataOutputStream( client.getOutputStream() );
                         // 对应ASCII码

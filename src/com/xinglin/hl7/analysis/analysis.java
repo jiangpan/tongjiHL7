@@ -74,8 +74,7 @@ public class analysis
         if( file.isFile() && file.exists() )
         { // 判断文件是否存在
 
-            InputStreamReader read           = new InputStreamReader(
-                    new FileInputStream( file ), encoding );// 考虑到编码格式
+            InputStreamReader read           = new InputStreamReader( new FileInputStream( file ), encoding );// 考虑到编码格式
             BufferedReader    bufferedReader = new BufferedReader( read );
             String            lineTxts       = "";
             String            lineTxt        = null;
@@ -110,8 +109,7 @@ public class analysis
         XPath                xpath     = XPathFactory.newInstance().newXPath();
 
         String type1 = (String) xpath.evaluate( "/HL7Message/MSH/MSH.9/MSH.9.3/text()", document1, XPathConstants.STRING );
-
-        boolean flag = MoveFile( file, "D:/runtime/hl7/typexml/" + type1 + "_" );
+        MoveFile( file, "D:/runtime/hl7/typexml/" + type1 + "_" );
         logger.info( "the type is : " + type1 );
         return type1;
     }

@@ -5,7 +5,9 @@ package com.xinglin.hl7.listener;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -22,7 +24,7 @@ public class FileDelete
      * @param args
      * @throws IOException
      */
-    public static void main( String[] args )
+    public static void main( String[] args ) throws IOException
     {
         // TODO Auto-generated method stub
 
@@ -39,6 +41,7 @@ public class FileDelete
      * @param dir
      *            要删除的目录的文件路径
      * @return 目录删除成功返回true，否则返回false
+     * @throws IOException
      */
     public static boolean deleteDirectory( String dir, String fileName )
     {
@@ -56,27 +59,24 @@ public class FileDelete
         }
         boolean flag = true;
         // 删除文件夹中的所有文件包括子目录
-        File[] files = dirFile.listFiles();
-        for( int i = 0; i < files.length; i++ )
+        List<File> files = FileToZip.getFilesByPathName( dir, fileName.split( "_" )[0] );
+        // File[] files = dirFile.listFiles();
+        for( int i = 0; i < files.size(); i++ )
         {
-            if( files[i].getName().contains( fileName.split( "_" )[0] ) )
+            // 删除子文件
+            if( files.get( i ).isFile() )
             {
-                // 删除子文件
-                if( files[i].isFile() )
-                {
-                    flag = FileDelete.deleteFile( files[i].getAbsolutePath() );
-                    if( !flag )
-                        break;
-                }
-                // 删除子目录
-                else if( files[i].isDirectory() )
-                {
-                    flag = FileDelete.deleteDirectory( files[i].getAbsolutePath(), fileName );
-                    if( !flag )
-                        break;
-                }
+                flag = FileDelete.deleteFile( files.get( i ).getAbsolutePath() );
+                if( !flag )
+                    break;
             }
-
+            // 删除子目录
+            else if( files.get( i ).isDirectory() )
+            {
+                flag = FileDelete.deleteDirectory( files.get( i ).getAbsolutePath(), fileName );
+                if( !flag )
+                    break;
+            }
         }
         if( !flag )
         {
