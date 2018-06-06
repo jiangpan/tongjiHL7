@@ -395,7 +395,7 @@ public class readXML
         {
             String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.2", "ORC.5",
                     "ORC.9", "ORC.12", "ORC.29", "TQ1.1", "TQ1.3", "TQ1.6", "TQ1.7", "TQ1.8", "TQ1.10", "TQ1.11", "RXO.1", "RXO.2", "RXO.4",
-                    "RXO.5", "RXO.20", "RXO.32", "RXR.1", "ORC.25", "RXO.24.1", "RXO.24.2" };
+                    "RXO.5", "RXO.20", "RXO.32", "RXR.1", "ORC.25", "RXO.24.1", "RXO.24.2", "RXO.24.4" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/ORC/ORC.1/text()", document, XPathConstants.NODESET );
             int      len  = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
@@ -449,7 +449,7 @@ public class readXML
                     anti.setROOM( (String) resultss.get( i ).get( 27 ) );// RXO.32
                     anti.setADMINISTRATION( (String) resultss.get( i ).get( 28 ) );// RXR.1
                     anti.setUSE_TIME( (String) resultss.get( i ).get( 29 ) );// ORC.25
-                    anti.setGOAL( "" );
+                    anti.setGOAL( (String) resultss.get( i ).get( 32 ) );
                     anti.setANTITYPECODE( (String) resultss.get( i ).get( 30 ) );// RXO.24.1
                     anti.setANTITYPENAME( (String) resultss.get( i ).get( 31 ) );// RXO.24.2
                     antilist.add( anti );
