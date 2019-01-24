@@ -165,7 +165,7 @@ public class HL7ToXmlConverter
         return document;
     }
 
-    @SuppressWarnings("unused")
+    // @SuppressWarnings("unused")
     private static Element CreateComponents( final Element el, final String hl7Components, String sField, int a, int b )
     {
         Element componentEl = el.addElement( sField + "." + a );

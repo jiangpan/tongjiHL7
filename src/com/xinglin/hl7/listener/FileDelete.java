@@ -5,8 +5,6 @@ package com.xinglin.hl7.listener;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -17,7 +15,6 @@ import org.apache.log4j.Logger;
  */
 public class FileDelete
 {
-
     private static Logger logger = Logger.getLogger( FileDelete.class.getName() );
 
     /**
@@ -26,13 +23,11 @@ public class FileDelete
      */
     public static void main( String[] args ) throws IOException
     {
-        // TODO Auto-generated method stub
-
-        String            sourceFilePath = "E:\\files";
-        String            zipFilePath    = "E:\\fileszip";
-        String            fileName       = "20160810_144619";
-        ArrayList<String> filelist       = FileToZip.fileToZip( sourceFilePath, zipFilePath, fileName );
-        deleteDirectory( sourceFilePath, fileName );
+        // String sourceFilePath = "E:\\files";
+        // String zipFilePath = "E:\\fileszip";
+        // String fileName = "20160810_144619";
+        // ArrayList<String> filelist = FileToZip.fileToZip( sourceFilePath, zipFilePath, fileName );
+        // deleteDirectory( sourceFilePath, fileName );
     }
 
     /**
@@ -119,5 +114,4 @@ public class FileDelete
             return false;
         }
     }
-
 }

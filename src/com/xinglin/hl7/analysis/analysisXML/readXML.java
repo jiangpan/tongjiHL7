@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.xinglin.hl7.analysis.analysisXML;
 
 import java.io.ByteArrayOutputStream;
@@ -8,6 +5,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,6 +30,7 @@ import com.VO.OPERATIONS;
 import com.VO.TEMPERATURE;
 import com.VO.XRAY;
 import com.factory.DAOFactory;
+import com.xinglin.hl7.listener.HL7_listener;
 
 /**
  * @author Administrator
@@ -39,7 +38,6 @@ import com.factory.DAOFactory;
  */
 public class readXML
 {
-
     private static Logger logger = Logger.getLogger( readXML.class.getName() );
 
     /**
@@ -48,7 +46,6 @@ public class readXML
      */
     public static void main( String[] args ) throws Throwable
     {
-        // TODO Auto-generated method stub
         insertXMl();
     }
 
@@ -71,13 +68,12 @@ public class readXML
 
     public static void insertXMl() throws Throwable
     {
-
         SimpleDateFormat df     = new SimpleDateFormat( "yyyyMMdd" );// 设置日期格式2
         String           nowDay = df.format( new Date() );
 
         long   startTime = System.currentTimeMillis();
-        String sour      = "d:/runtime/hl7/typexml/";
-        String dns       = "d:/runtime/hl7/oldXML/";
+        String sour      = "d:/runtime/hl7/rerun/xml/";
+        String dns       = "d:/runtime/hl7/rerun/finished/";
         File   folder    = new File( sour );
         File[] files     = folder.listFiles();
         if( files.length != 0 )
@@ -94,17 +90,23 @@ public class readXML
                 }
                 String typename = file.getName().split( "_" )[0] + file.getName().split( "_" )[1];
 
-                logger.info( "当前处理类型为：" + typename );
+                // logger.info( "当前处理类型为：" + typename );
                 boolean flag = getFiletoDB( file, typename );
 
-                logger.info( file.getName() + "的插入结果为：" + flag );
+                // logger.info( file.getName() + "的插入结果为：" + flag );
                 // flag=false;
                 if( flag )
                 {
+                    File f = new File( dns );
+                    if( f.exists() == false )
+                    {
+                        f.mkdirs();
+                    }
+
                     boolean moveresult = MoveFile( file, dns );
                     if( moveresult )
                     {
-                        logger.info( "XMl数据已移动" + file.getName() );
+                        // logger.info( "XMl数据已移动" + file.getName() );
                     }
                     else
                     {
@@ -136,20 +138,20 @@ public class readXML
         {
             logger.info( "【readXML】路径下文件共有" + files.length + "个" );
             logger.info( "【readXML】开始读取路径下文件：" + sour );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】" + "路径下文件共有" + files.length + "个" + "\n" );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】" + "开始读取路径下文件：" + sour + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "路径下文件共有" + files.length + "个" + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "开始读取路径下文件：" + sour + "\n" );
             for( File file : files )
             {
                 logger.info( "【readXML】当前文件名为： " + file.getName() );
-                text.append( "【" + df.format( new Date() ) + "】【readXML】" + "当前文件名为： " + file.getName() + "\n" );
+                HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "当前文件名为： " + file.getName() + "\n" );
                 String typename = file.getName().split( "_" )[0] + file.getName().split( "_" )[1];
 
                 logger.info( "【readXML】当前处理类型为：" + typename );
-                text.append( "【" + df.format( new Date() ) + "】【readXML】" + "当前处理类型为：" + typename + "\n" );
+                HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "当前处理类型为：" + typename + "\n" );
                 boolean flag = getFiletoDB( file, typename );
 
                 logger.info( "【readXML】" + file.getName() + "的插入结果为：" + flag );
-                text.append( "【" + df.format( new Date() ) + "】【readXML】" + file.getName() + "的插入结果为：" + flag + "\n" );
+                HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + file.getName() + "的插入结果为：" + flag + "\n" );
                 // flag=false;
                 if( flag )
                 {
@@ -157,15 +159,15 @@ public class readXML
                     if( moveresult )
                     {
                         logger.info( "【readXML】XMl数据已移动" + file.getName() );
-                        text.append( "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据已移动" + file.getName() + "\n" );
-                        text.append( "########################################################################################################################################\n" );
+                        HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据已移动" + file.getName() + "\n" );
+                        HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
 
                     }
                     else
                     {
                         logger.error( "【readXML】XMl数据移动失败" + file.getName() );
-                        text.append( "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据移动失败" + file.getName() + "\n" );
-                        text.append( "########################################################################################################################################\n" );
+                        HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据移动失败" + file.getName() + "\n" );
+                        HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
 
                     }
                 }
@@ -176,7 +178,7 @@ public class readXML
         else
         {
             logger.info( "【readXML】指定路径下没有文件：" + sour );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】" + "指定路径下没有文件：" + sour + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "指定路径下没有文件：" + sour + "\n" );
         }
 
         long endTime = System.currentTimeMillis();
@@ -196,16 +198,16 @@ public class readXML
         {
 
             logger.info( "【readXML】开始处理文件：" + filename );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】开始处理文件：" + filename + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】开始处理文件：" + filename + "\n" );
             // 获取读取文件的类型
             String typename = file.getName().split( "_" )[0] + file.getName().split( "_" )[1];
             logger.info( "【readXML】当前处理类型为：" + typename );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】" + "当前处理类型为：" + typename + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "当前处理类型为：" + typename + "\n" );
             // 根据文件类型进行处理
             boolean flag = getFiletoDB( file, typename );
 
             logger.info( "【readXML】" + file.getName() + "的插入结果为：" + flag );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】" + file.getName() + "的插入结果为：" + flag + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + file.getName() + "的插入结果为：" + flag + "\n" );
             // flag=false;
             if( flag )
             {
@@ -213,15 +215,15 @@ public class readXML
                 if( moveresult )
                 {
                     logger.info( "【readXML】XMl数据已移动" + file.getName() );
-                    text.append( "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据已移动" + file.getName() + "\n" );
-                    text.append( "########################################################################################################################################\n" );
+                    HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据已移动" + file.getName() + "\n" );
+                    HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
 
                 }
                 else
                 {
                     logger.error( "【readXML】XMl数据移动失败" + file.getName() );
-                    text.append( "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据移动失败" + file.getName() + "\n" );
-                    text.append( "########################################################################################################################################\n" );
+                    HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据移动失败" + file.getName() + "\n" );
+                    HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
                 }
             }
             ;
@@ -230,7 +232,7 @@ public class readXML
         else
         {
             logger.info( "【readXML】指定路径下没有文件：" + sour );
-            text.append( "【" + df.format( new Date() ) + "】【readXML】" + "指定路径下没有文件：" + filename + "\n" );
+            HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "指定路径下没有文件：" + filename + "\n" );
         }
 
         long endTime = System.currentTimeMillis();
@@ -343,9 +345,7 @@ public class readXML
             // 存储基本信息
             ArrayList<BASICINFO> infos   = new ArrayList<BASICINFO>();
             BASICINFO            info    = new BASICINFO();
-            String[]             adts    = { "MSH.9", "MSH.10", "EVN.1", "EVN.2", "PID.2", "PID.3", "PID.5.1", "PID.7", "PID.8", "PID.11", "PID.11", "PID.13",
-                    "PID.14", "NK1.4.1", "NK1.2", "NK1.4.1", "NK1.5", "PV1.2", "PV1.3.1", "PV1.3.2", "PV1.3.3", "PV1.3.4", "PV1.3.10", "PV1.6.1",
-                    "PV1.6.2", "PV1.6.3", "PV1.6.4", "PV1.7", "PV1.19", "PV1.44", "PV1.45" };
+            String[]             adts    = { "MSH.9", "MSH.10", "EVN.1", "EVN.2", "PID.2", "PID.3", "PID.5.1", "PID.7", "PID.8", "PID.11", "PID.11", "PID.13", "PID.14", "NK1.4.1", "NK1.2", "NK1.4.1", "NK1.5", "PV1.2", "PV1.3.1", "PV1.3.2", "PV1.3.3", "PV1.3.4", "PV1.3.10", "PV1.6.1", "PV1.6.2", "PV1.6.3", "PV1.6.4", "PV1.7", "PV1.19", "PV1.44", "PV1.45" };
             ArrayList<String>    results = new ArrayList<String>();
             for( String adt : adts )
             {
@@ -393,20 +393,17 @@ public class readXML
         }
         else if( typename.equals( "OMPO09" ) )
         {
-            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.2", "ORC.5",
-                    "ORC.9", "ORC.12", "ORC.29", "TQ1.1", "TQ1.3", "TQ1.6", "TQ1.7", "TQ1.8", "TQ1.10", "TQ1.11", "RXO.1", "RXO.2", "RXO.4",
-                    "RXO.5", "RXO.20", "RXO.32", "RXR.1", "ORC.25", "RXO.24.1", "RXO.24.2", "RXO.24.4" };
+            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.2", "ORC.5", "ORC.9", "ORC.12", "ORC.29", "TQ1.1", "TQ1.3", "TQ1.6", "TQ1.7", "TQ1.8", "TQ1.10", "TQ1.11", "RXO.1", "RXO.2", "RXO.4", "RXO.5", "RXO.20", "RXO.32", "RXR.1", "ORC.25", "RXO.24.1", "RXO.24.2", "RXO.24.4" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/ORC/ORC.1/text()", document, XPathConstants.NODESET );
             int      len  = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
-            ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
+            ArrayList<List<String>> resultss = new ArrayList<>();
             for( int l = 1; l <= len; l++ )
             {
                 ArrayList<String> results = new ArrayList<String>();
                 for( String adt : adts )
                 {
-                    String replace = "/HL7Message/" + returnReplace( adt ).replace( "ORC/", "ORC[" + l + "]/" ).replace( "TQ1/", "TQ1[" + l + "]/" )
-                            .replace( "RXO/", "RXO[" + l + "]/" ).replace( "RXR/", "RXR[" + l + "]/" );
+                    String replace = "/HL7Message/" + returnReplace( adt ).replace( "ORC/", "ORC[" + l + "]/" ).replace( "TQ1/", "TQ1[" + l + "]/" ).replace( "RXO/", "RXO[" + l + "]/" ).replace( "RXR/", "RXR[" + l + "]/" );
                     String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                     results.add( temp );
                 }
@@ -460,14 +457,13 @@ public class readXML
         }
         else if( typename.equals( "ORUR01" ) )
         {
-            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1",
-                    "ORC.29", "OBR.1", "OBR.4", "OBX.1", "OBX.2", "OBX.3", "OBX.5", "OBX.6", "OBX.11", "OBX.14" };
+            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.29", "OBR.1", "OBR.4", "OBX.1", "OBX.2", "OBX.3", "OBX.5", "OBX.6", "OBX.11", "OBX.14" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.14/text()", document, XPathConstants.NODESET );
             int      len  = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
             if( len >= 1 )
             {
-                ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
+                ArrayList<List<String>> resultss = new ArrayList<>();
                 for( int l = 1; l <= len; l++ )
                 {
                     ArrayList<String> results = new ArrayList<String>();
@@ -518,9 +514,7 @@ public class readXML
         }
         else if( typename.equals( "OULR21" ) )
         {
-            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1",
-                    "ORC.16", "ORC.29", "OBR.1", "OBR.2", "OBR.3", "OBR.4", "OBR.22", "OBR.25", "OBR.26.1", "OBX.1", "OBX.2",
-                    "OBX.3.2", "OBX.4", "OBX.5", "OBX.7", "OBX.8", "OBX.11", "OBX.17", "OBR.7", "OBX.3.1", "OBR.15", "OBR.14" };
+            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.16", "ORC.29", "OBR.1", "OBR.2", "OBR.3", "OBR.4", "OBR.22", "OBR.25", "OBR.26.1", "OBX.1", "OBX.2", "OBX.3.2", "OBX.4", "OBX.5", "OBX.7", "OBX.8", "OBX.11", "OBX.17", "OBR.7", "OBX.3.1", "OBR.15", "OBR.14" };
             // 根据obr的个数判断有几份报告
             NodeList lenobr = (NodeList) xpath.evaluate( "/HL7Message/OBR/OBR.1/text()", document, XPathConstants.NODESET );
             // logger.info("【getFiletoDB】报告份数obr子项lenobr个数："+lenobr.getLength());
@@ -567,7 +561,7 @@ public class readXML
                 // 分成num.length+1份
                 for( int t = 1; t <= num.size(); t++ )
                 {
-                    ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
+                    ArrayList<List<String>> resultss = new ArrayList<>();
                     for( int u = 1; u <= num.get( t - 1 ); u++ )
                     {
                         ArrayList<String> results = new ArrayList<String>();
@@ -625,7 +619,6 @@ public class readXML
                             anti.setSPECIMEN( (String) resultss.get( i ).get( 30 ) );
                             anti.setRectime( (String) resultss.get( i ).get( 31 ) );
                             TEMPlist.add( anti );
-                            System.out.println( anti.toString() );
                         }
                     }
                     flag = DAOFactory.getLisreportDAOInstance().doCreate( TEMPlist );
@@ -644,9 +637,7 @@ public class readXML
                 }
                 if( len >= 1 )
                 {
-                    ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
-                    System.out.println( "len:" + len );
-                    System.out.println( "len:" + lenobr.getLength() );
+                    ArrayList<List<String>> resultss = new ArrayList<>();
                     for( int l = 1; l <= len; l++ )
                     {
                         ArrayList<String> results = new ArrayList<String>();
@@ -705,9 +696,7 @@ public class readXML
         }
         else if( typename.equals( "SIUS12" ) )
         {
-            String[] adts = { "MSH.9", "MSH.10", "SCH.2", "SCH.6", "SCH.11.4", "SCH.28", "PID.2", "PV1.2", "PV1.19", "AIS.1", "AIS.3.1", "AIS.3.2",
-                    "AIS.3.3", "AIS.4", "AIS.7", "AIS.8", "AIS.11", "AIS.12", "AIS.13", "AIS.14.2", "AIS.15", "AIS.16", "AIS.17.2", "AIS.18", "AIS.19",
-                    "AIS.20", "AIS.21", "AIG.4", "AIG.14", "AIL.3.2", "AIL.3.9" };
+            String[] adts = { "MSH.9", "MSH.10", "SCH.2", "SCH.6", "SCH.11.4", "SCH.28", "PID.2", "PV1.2", "PV1.19", "AIS.1", "AIS.3.1", "AIS.3.2", "AIS.3.3", "AIS.4", "AIS.7", "AIS.8", "AIS.11", "AIS.12", "AIS.13", "AIS.14.2", "AIS.15", "AIS.16", "AIS.17.2", "AIS.18", "AIS.19", "AIS.20", "AIS.21", "AIG.4", "AIG.14", "AIL.3.2", "AIL.3.9" };
             // ,"AIP.1","AIP.3.1","AIP.3.2","AIP.4.1","AIP.4.2"};
 
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/SCH/SCH.2/text()", document, XPathConstants.NODESET );
@@ -718,7 +707,7 @@ public class readXML
             // logger.info("【getFiletoDB】共存在"+lenAIP+"条AIP数据");
             if( len > 0 )
             {
-                ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
+                ArrayList<List<String>> resultss = new ArrayList<>();
                 for( int l = 1; l <= len; l++ )
                 {
                     ArrayList<String> results = new ArrayList<String>();
@@ -813,9 +802,7 @@ public class readXML
         }
         if( typename.equals( "ORUR01" ) )
         {
-            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1",
-                    "ORC.2", "ORC.29", "OBR.1", "OBR.3", "OBR.4", "OBR.22", "OBR.24", "OBR.25", "OBR.47.2", "OBX.1", "OBX.2", "OBX.3",
-                    "OBX.5.1", "OBX.5.2", "OBX.8", "OBX.11", "OBX.17" };
+            String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.2", "ORC.29", "OBR.1", "OBR.3", "OBR.4", "OBR.22", "OBR.24", "OBR.25", "OBR.47.2", "OBX.1", "OBX.2", "OBX.3", "OBX.5.1", "OBX.5.2", "OBX.8", "OBX.11", "OBX.17" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.17/text()", document, XPathConstants.NODESET );
             int      len  = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
@@ -828,7 +815,7 @@ public class readXML
             }
             if( len >= 1 )
             {
-                ArrayList<ArrayList> resultss = new ArrayList<ArrayList>();
+                ArrayList<List<String>> resultss = new ArrayList<>();
                 for( int l = 1; l <= len; l++ )
                 {
                     ArrayList<String> results = new ArrayList<String>();

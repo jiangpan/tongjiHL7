@@ -35,8 +35,6 @@ public class checkXML
      */
     public static void main( String[] args ) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException
     {
-        // TODO Auto-generated method stub
-
         CheckXML( "d:/runtime/hl7/typexml/ADT_A01_20160726_012557_0.txt.xml", null );
     }
 
@@ -55,9 +53,9 @@ public class checkXML
                 String evn1 = (String) xpath.evaluate( "/HL7Message/MSH/MSH.9", document, XPathConstants.STRING );
                 String evn2 = (String) xpath.evaluate( "/HL7Message/EVN/EVN.2", document, XPathConstants.STRING );
                 String pid2 = (String) xpath.evaluate( "/HL7Message/PID/PID.2", document, XPathConstants.STRING );
-                String pid4 = (String) xpath.evaluate( "/HL7Message/PID/PID.4", document, XPathConstants.STRING );
+                // String pid4 = (String) xpath.evaluate( "/HL7Message/PID/PID.4", document, XPathConstants.STRING );
                 String pid5 = (String) xpath.evaluate( "/HL7Message/PID/PID.5", document, XPathConstants.STRING );
-                String pid7 = (String) xpath.evaluate( "/HL7Message/PID/PID.7", document, XPathConstants.STRING );
+                // String pid7 = (String) xpath.evaluate( "/HL7Message/PID/PID.7", document, XPathConstants.STRING );
                 if( evn1.equals( "" ) )
                 {
                     logger.info( "事件类型代代码为空" );
@@ -79,7 +77,6 @@ public class checkXML
                     ackcont += "患者姓名为空";
                 }
             }
-
         }
         else
         {
@@ -88,7 +85,5 @@ public class checkXML
         }
 
         return ackcont;
-
     }
-
 }

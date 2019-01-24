@@ -32,7 +32,7 @@ public class test
 
         for( int i = 0; i < sourceFiles.length; i++ )
         {
-            System.out.println(  sourceFiles[i].getName() );
+            System.out.println( sourceFiles[i].getName() );
         }
     }
 

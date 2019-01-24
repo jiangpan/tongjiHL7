@@ -4,13 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 public class Save
 {
-    private static Logger logger = Logger.getLogger( Save.class.getName() );
-
-    // private static Logger logger = Logger.getLogger(save.class.getName () );
     public static boolean save( String url, String content )
     {
         boolean result = false;

@@ -6,6 +6,8 @@ package com.xinglin.hl7.analysis.analysisXML;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,8 +27,49 @@ import org.xml.sax.SAXException;
  */
 public class readConfig
 {
+    private static Map<String, String> configMap;
+    private static Logger              logger = Logger.getLogger( readConfig.class.getName() );
 
-    private static Logger logger = Logger.getLogger( readConfig.class.getName() );
+    public static Map<String, String> getConfigMap()
+    {
+        if( configMap == null )
+        {
+            configMap = getDBinfo();
+        }
+        return configMap;
+    }
+
+    private static Map<String, String> getDBinfo()
+    {
+        Map<String, String> map = new HashMap<>();
+        try
+        {
+            File            file     = new File( "D:/runtime/hl7/Config/config.xml" );
+            DocumentBuilder builder  = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document        document = builder.parse( file );
+            // 生成XPath对象
+            XPath  xpath    = XPathFactory.newInstance().newXPath();
+            String dbdriver = (String) xpath.evaluate( "/config/DB/dbdriver/text()", document, XPathConstants.STRING );
+            String dbuser   = (String) xpath.evaluate( "/config/DB/dbuser/text()", document, XPathConstants.STRING );
+            String dbpass   = (String) xpath.evaluate( "/config/DB/dbpass/text()", document, XPathConstants.STRING );
+            String dburl    = (String) xpath.evaluate( "/config/DB/dburl/text()", document, XPathConstants.STRING );
+
+            String detail = (String) xpath.evaluate( "/config/LOG/detail/text()", document, XPathConstants.STRING );
+            String swing  = (String) xpath.evaluate( "/config/LOG/swing/text()", document, XPathConstants.STRING );
+
+            map.put( "dbdriver", dbdriver );
+            map.put( "dbuser", dbuser );
+            map.put( "dbpass", dbpass );
+            map.put( "dburl", dburl );
+            map.put( "detail", detail );
+            map.put( "swing", swing );
+        }
+        catch( Throwable t )
+        {
+            logger.error( t.getMessage(), t );
+        }
+        return map;
+    }
     /*
      * public static ArrayList<String> readConfig() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
      * {
@@ -59,14 +102,14 @@ public class readConfig
 
     public static ArrayList<String> CreateAck( String url ) throws ParserConfigurationException, SAXException, IOException, XPathExpressionException
     {
-        File file = new File( url );
+        File              file = new File( url );
         ArrayList<String> acks = new ArrayList<String>();
-        String ack1 = "MSH|^~\\&|";
+        String            ack1 = "MSH|^~\\&|";
         if( file.isFile() && file.exists() )
         {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = builder.parse( file );
-            XPath xpath = XPathFactory.newInstance().newXPath();
+            DocumentBuilder builder  = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document        document = builder.parse( file );
+            XPath           xpath    = XPathFactory.newInstance().newXPath();
             ack1 += (String) "INFECT" + "|"
                     + (String) xpath.evaluate( "/HL7Message/MSH/MSH.6", document, XPathConstants.STRING ) + "|"
                     + (String) xpath.evaluate( "/HL7Message/MSH/MSH.3", document, XPathConstants.STRING ) + "|"
@@ -84,7 +127,7 @@ public class readConfig
                     + (String) xpath.evaluate( "/HL7Message/MSH/MSH.17", document, XPathConstants.STRING ) + "|"
                     + (String) xpath.evaluate( "/HL7Message/MSH/MSH.18", document, XPathConstants.STRING );
 
-            String ack2 = "MSA|AA|" + (String) xpath.evaluate( "/HL7Message/MSH/MSH.10", document, XPathConstants.STRING );
+            String  ack2 = "MSA|AA|" + (String) xpath.evaluate( "/HL7Message/MSH/MSH.10", document, XPathConstants.STRING );
             boolean flag = true;
 
             String ack3 = "";

@@ -121,7 +121,7 @@ class WriteHandlerThread implements Runnable
     public void run()
     {
         DataOutputStream dos = null;
-        BufferedReader br = null;
+        BufferedReader   br  = null;
         try
         {
             while( true )

@@ -40,9 +40,9 @@ public class findNoDept
     /**
      * @param args
      * @throws IOException
-     * @throws SAXException 
-     * @throws ParserConfigurationException 
-     * @throws XPathExpressionException 
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws XPathExpressionException
      */
     public static void main( String[] args ) throws IOException, XPathExpressionException, ParserConfigurationException, SAXException
     {
@@ -55,9 +55,9 @@ public class findNoDept
 
     public static void transXML() throws XPathExpressionException, IOException, ParserConfigurationException, SAXException
     {
-        String sour2 = "D:\\QQDownload\\new\\";
-        File folder = new File( sour2 );
-        File[] files = folder.listFiles();
+        String sour2  = "D:\\QQDownload\\new\\";
+        File   folder = new File( sour2 );
+        File[] files  = folder.listFiles();
         if( files.length != 0 )
         {
             for( File file : files )
@@ -70,17 +70,17 @@ public class findNoDept
 
     public static List<String> findMids() throws IOException
     {
-        List<String> names = new ArrayList<String>();
-        String sour = "D:\\QQDownload\\mids.txt";
-        File file = new File( sour );
-        String type = null;
-        String encoding = "utf-8";
+        List<String> names    = new ArrayList<String>();
+        String       sour     = "D:\\QQDownload\\mids.txt";
+        File         file     = new File( sour );
+        String       type     = null;
+        String       encoding = "utf-8";
         if( file.isFile() && file.exists() )
         { // 判断文件是否存在
-            InputStreamReader read = new InputStreamReader(
-                    new FileInputStream( file ), encoding );// 考虑到编码格式
-            BufferedReader bufferedReader = new BufferedReader( read );
-            String lineTxt = null;
+            InputStreamReader read           = new InputStreamReader(
+                    new FileInputStream( file ), encoding );              // 考虑到编码格式
+            BufferedReader    bufferedReader = new BufferedReader( read );
+            String            lineTxt        = null;
 
             while( ( lineTxt = bufferedReader.readLine() ) != null )
             {
@@ -93,10 +93,10 @@ public class findNoDept
 
     public static void findAllMid( List<String> names )
     {
-        String sour = "D:\\QQDownload\\files\\";
-        String sour2 = "D:\\QQDownload\\new\\";
-        File folder = new File( sour );
-        File[] files = folder.listFiles();
+        String sour   = "D:\\QQDownload\\files\\";
+        String sour2  = "D:\\QQDownload\\new\\";
+        File   folder = new File( sour );
+        File[] files  = folder.listFiles();
         if( files.length != 0 )
         {
             for( File file : files )

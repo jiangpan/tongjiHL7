@@ -34,16 +34,24 @@ import com.xinglin.hl7.analysis.analysisXML.readXML;
  */
 public class HL7_listener
 {
-
     private static Logger logger = Logger.getLogger( HL7_listener.class.getName() );
 
-    public static final int PORT = 8000; // 监听的端口号
+    public static final int PORT = 8000;
 
-    public static JTextArea text; // 服务器相关的界面组件
+    public static JTextArea     text;
+    private static LogTextProxy ltp;
+
+    public static LogTextProxy getLogTextProxy()
+    {
+        if( ltp == null )
+        {
+            ltp = new LogTextProxy();
+        }
+        return ltp;
+    }
 
     public static void main( String[] args )
     {
-
         Thread shutdownHook = new Thread(){
             public void run()
             {
@@ -53,7 +61,6 @@ public class HL7_listener
                 }
                 catch( InterruptedException e )
                 {
-                    // TODO Auto-generated catch block
                     logger.error( this.getName(), e );
                 }
                 logger.info( "restart" );
@@ -76,13 +83,11 @@ public class HL7_listener
         frame.setSize( 600, 800 );
         text.setEditable( true );
 
-        frame.addWindowListener( new WindowAdapter() // 关闭窗口
-        {
+        frame.addWindowListener( new WindowAdapter(){
             public void windowClosing( WindowEvent e )
             {
                 int rs = JOptionPane.showConfirmDialog( null, "是否退出?" );
-                if( rs == 0 )
-                    System.exit( 0 );
+                if( rs == 0 ) System.exit( 0 );
             }
         } );
 
@@ -92,14 +97,14 @@ public class HL7_listener
             serverSocket = new ServerSocket( PORT );
             text.append( "监听" + PORT + "端口" + "\n" );
             logger.info( "【HL7_listener】开始监听" + PORT + "端口" );
+            HL7_listener.getLogTextProxy().text( text, "已经开启详细链接接入打印" );
             while( true )
             {
                 Socket client = serverSocket.accept();
-                logger.info( "【HL7_listener】新增连接：" + client.getInetAddress() + ":" + client.getPort() );
-                text.append( "【HL7_listener】新增连接：" + client.getInetAddress() + ":" + client.getPort() + "\n" );
+                getLogTextProxy().log( logger, "【HL7_listener】新增连接：" + client.getInetAddress() + ":" + client.getPort() );
+                getLogTextProxy().text( text, "【HL7_listener】新增连接：" + client.getInetAddress() + ":" + client.getPort() + "\n" );
                 // 线程处理读写
                 new Thread( new ReadHandlerThread( client, text ) ).start();
-
                 // new Thread(new WriteHandlerThread(client,text)).start();
             }
         }
@@ -132,7 +137,6 @@ public class HL7_listener
  */
 class ReadHandlerThread implements Runnable
 {
-
     private static Logger logger = Logger.getLogger( ReadHandlerThread.class.getName() );
     private Socket        client;
     private JTextArea     text;
@@ -154,8 +158,8 @@ class ReadHandlerThread implements Runnable
             int i = 0;
             br = new BufferedReader( new InputStreamReader( client.getInputStream(), "utf-8" ) );
             ps = new PrintStream( client.getOutputStream() );
-            String reciver;// 每次接受内容
-            String input       = "";// 完整消息
+            String reciver;           // 每次接受内容
+            String input       = "";  // 完整消息
             String filename    = null;// 保存文件名
             String mshtypename = null;// MSH id
             while( ( reciver = br.readLine() ) != null )
@@ -193,11 +197,10 @@ class ReadHandlerThread implements Runnable
                     logger.info( "【ReadHandlerThread】收到结尾字符" + reciver.getBytes()[0] );
                     // input=input.replace("<0B>","").replace("<1C><0D>","");
                     logger.info( "【ReadHandlerThread】收到结尾内容为：" + reciver );
-                    logger.info( "【ReadHandlerThread】收到的全部内容为：" + input );
+                    HL7_listener.getLogTextProxy().log( logger, "【ReadHandlerThread】收到的全部内容为：" + input );
 
-                    text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到结尾内容为：" + reciver + "\n" );
-                    text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到结尾字符" + reciver.getBytes()[0] + "\n" );
-                    text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到的全部内容为：\n" + input + "\n" );
+                    HL7_listener.getLogTextProxy().text( text, "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到结尾内容为：" + reciver + "\n" );
+                    HL7_listener.getLogTextProxy().text( text, "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到结尾字符" + reciver.getBytes()[0] + "\n" );
                     // 保存文件
                     boolean result = Save.save( saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt", input );
 
@@ -225,23 +228,23 @@ class ReadHandlerThread implements Runnable
                         dos.write( 28 ); // 1c FS (file separator) 文件分隔符
                         dos.write( 13 );
                         String hhcc = "\n";
-                        text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】回复:\n" + ack.get( 0 ) + hhcc + ack.get( 1 ) + hhcc + ack.get( 2 ) + hhcc + "\n" );
-                        text.append( "****************************************************************************************************************************************\n" );
+                        HL7_listener.getLogTextProxy().text( text, "【" + df2.format( new Date() ) + "】【ReadHandlerThread】回复:\n" + ack.get( 0 ) + hhcc + ack.get( 1 ) + hhcc + ack.get( 2 ) + hhcc + "\n" );
 
                         logger.info( "【ReadHandlerThread】回复" + ack.get( 0 ) + hhcc + ack.get( 1 ) + hhcc + ack.get( 2 ) + hhcc );
 
                         long endTime = System.currentTimeMillis();
                         logger.info( "回复确认耗时： " + ( endTime - startTime ) + "ms" );
+                        HL7_listener.getLogTextProxy().text( text, "回复确认耗时： " + ( endTime - startTime ) + "ms\n" );
+                        HL7_listener.getLogTextProxy().text( text, "****************************************************************************************************************************************\n" );
 
                         // text过多删除
                         if( text.getLineCount() > 10000 )
                         {
-
                             logger.info( "【ReadHandlerThread】JTextArea行数过多，自动置空" + text.getLineCount() );
                             text.setText( "" );
                         }
                         logger.info( "【ReadHandlerThread】新建线程处理文件" + filename );
-                        text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】新建线程处理文件" + filename + "\n" );
+                        HL7_listener.getLogTextProxy().text( text, "【" + df2.format( new Date() ) + "】【ReadHandlerThread】新建线程处理文件" + filename + "\n" );
                         new Thread( new WriteHandlerThread( client, text, filename ) ).start();
 
                     }
@@ -254,7 +257,7 @@ class ReadHandlerThread implements Runnable
                 }
                 else
                 {
-                    text.append( "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到：" + reciver + "\n" );
+                    HL7_listener.getLogTextProxy().text( text, "【" + df2.format( new Date() ) + "】【ReadHandlerThread】收到：" + reciver + "\n" );
                     input += reciver + "\n";
                 }
 
@@ -280,7 +283,7 @@ class ReadHandlerThread implements Runnable
                 }
                 else
                 {
-                    logger.info( "【ReadHandlerThread】输入、输出流不关闭" + ps.toString() );
+                    logger.info( "【ReadHandlerThread】输入、输出流不关闭" );
                 }
                 if( client != null )
                 {
@@ -321,14 +324,12 @@ class WriteHandlerThread implements Runnable
         {
             readXML.insertXMl( text, filename );
         }
-        catch( Throwable e )
+        catch( Throwable t )
         {
-            // TODO Auto-generated catch block
-            logger.error( "【WriteHandlerThread】【Error】", e );
-            Thread.currentThread().interrupt();
+            logger.error( "【WriteHandlerThread】【Error】", t );
+            // Thread.currentThread().interrupt();
         }
     }
-
 }
 
 /*
@@ -336,7 +337,6 @@ class WriteHandlerThread implements Runnable
  */
 class TimerManagerThread implements Runnable
 {
-
     private static Logger logger = Logger.getLogger( TimerManagerThread.class.getName() );
 
     public TimerManagerThread()
@@ -349,5 +349,4 @@ class TimerManagerThread implements Runnable
         logger.info( "开始删除计划" );
         new TimerManager();
     }
-
 }
