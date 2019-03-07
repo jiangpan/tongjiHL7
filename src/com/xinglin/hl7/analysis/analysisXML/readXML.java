@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
@@ -68,52 +69,62 @@ public class readXML
 
     public static void insertXMl() throws Throwable
     {
-        SimpleDateFormat df     = new SimpleDateFormat( "yyyyMMdd" );// 设置日期格式2
-        String           nowDay = df.format( new Date() );
+        SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd" );// 设置日期格式2
+        String nowDay = df.format( new Date() );
 
-        long   startTime = System.currentTimeMillis();
-        String sour      = "d:/runtime/hl7/rerun/xml/";
-        String dns       = "d:/runtime/hl7/rerun/finished/";
-        File   folder    = new File( sour );
-        File[] files     = folder.listFiles();
+        long startTime = System.currentTimeMillis();
+        String sour = "d:/runtime/hl7/rerun/xml/";
+        String dns = "d:/runtime/hl7/rerun/finished/";
+        File folder = new File( sour );
+        File[] files = folder.listFiles();
         if( files.length != 0 )
         {
             logger.info( "路径下文件共有" + files.length + "个" );
             int i = 0;
-            for( File file : files )
-            {
-                i++;
-                logger.info( "当前第" + i + "个" );
-                if( nowDay.compareTo( file.getName().split( "_" )[2] ) <= 0 )
-                {
-                    // continue;
-                }
-                String typename = file.getName().split( "_" )[0] + file.getName().split( "_" )[1];
 
-                // logger.info( "当前处理类型为：" + typename );
-                boolean flag = getFiletoDB( file, typename );
+            Stream.of( files )
+                    .parallel()
+                    .forEach( file -> {
+                        try
+                        {
+                            // i++;
+                            // logger.info( "当前第" + i + "个" );
+                            // if( nowDay.compareTo( file.getName().split( "_" )[2] ) <= 0 )
+                            // {
+                            // continue;
+                            // }
+                            String typename = file.getName().split( "_" )[0] + file.getName().split( "_" )[1];
 
-                // logger.info( file.getName() + "的插入结果为：" + flag );
-                // flag=false;
-                if( flag )
-                {
-                    File f = new File( dns );
-                    if( f.exists() == false )
-                    {
-                        f.mkdirs();
-                    }
+                            // logger.info( "当前处理类型为：" + typename );
+                            boolean flag = getFiletoDB( file, typename );
 
-                    boolean moveresult = MoveFile( file, dns );
-                    if( moveresult )
-                    {
-                        // logger.info( "XMl数据已移动" + file.getName() );
-                    }
-                    else
-                    {
-                        logger.error( "XMl数据移动失败" + file.getName() );
-                    }
-                }
-            }
+                            // logger.info( file.getName() + "的插入结果为：" + flag );
+                            // flag=false;
+                            if( flag )
+                            {
+                                File f = new File( dns );
+                                if( f.exists() == false )
+                                {
+                                    f.mkdirs();
+                                }
+
+                                boolean moveresult = MoveFile( file, dns );
+                                if( moveresult )
+                                {
+                                    // logger.info( "XMl数据已移动" + file.getName() );
+                                }
+                                else
+                                {
+                                    logger.error( "XMl数据移动失败" + file.getName() );
+                                }
+                            }
+                        }
+                        catch( Throwable t )
+                        {
+                            logger.error( t.getMessage(), t );
+                        }
+
+                    } );
         }
         else
         {
@@ -129,11 +140,11 @@ public class readXML
     {
         SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:sss" );// 设置日期格式2
 
-        long   startTime = System.currentTimeMillis();
-        String sour      = "d:/runtime/hl7/typexml/";
-        String dns       = "d:/runtime/hl7/oldXML/";
-        File   folder    = new File( sour );
-        File[] files     = folder.listFiles();
+        long startTime = System.currentTimeMillis();
+        String sour = "d:/runtime/hl7/typexml/";
+        String dns = "d:/runtime/hl7/oldXML/";
+        File folder = new File( sour );
+        File[] files = folder.listFiles();
         if( files.length != 0 )
         {
             logger.info( "【readXML】路径下文件共有" + files.length + "个" );
@@ -190,10 +201,10 @@ public class readXML
     {
         SimpleDateFormat df = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:sss" );// 设置日期格式2
 
-        long   startTime = System.currentTimeMillis();
-        String sour      = "d:/runtime/hl7/typexml/";
-        String dns       = "d:/runtime/hl7/oldXML/";
-        File   file      = new File( filename );
+        long startTime = System.currentTimeMillis();
+        String sour = "d:/runtime/hl7/typexml/";
+        String dns = "d:/runtime/hl7/oldXML/";
+        File file = new File( filename );
         if( file.exists() )
         {
 
@@ -261,8 +272,8 @@ public class readXML
     {
         boolean flag = false;
         // 解析文件，生成document对象
-        DocumentBuilder builder  = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document        document = builder.parse( file );
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = builder.parse( file );
         // 生成XPath对象
         XPath xpath = XPathFactory.newInstance().newXPath();
         // 处理出入转
@@ -270,7 +281,7 @@ public class readXML
         {
             // 获取诊断数量
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/DG1/DG1.1/text()", document, XPathConstants.NODESET );
-            int      len  = lens.getLength();
+            int len = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条DG1诊断数据");
             // 只有一个时
             if( len > 0 && len < 2 )
@@ -279,8 +290,8 @@ public class readXML
                 for( int i = 0; i < len; i++ )
                 {
                     ArrayList<String> resultofdiags = new ArrayList<String>();
-                    DIAGNOSIS         diag          = new DIAGNOSIS();
-                    String[]          diagtitles    = { "MSH.9", "MSH.10", "PID.2", "PV1.19", "PID.5.1", "DG1.1", "DG1.3", "DG1.3.1", "DG1.5", "DG1.6" };
+                    DIAGNOSIS diag = new DIAGNOSIS();
+                    String[] diagtitles = { "MSH.9", "MSH.10", "PID.2", "PV1.19", "PID.5.1", "DG1.1", "DG1.3", "DG1.3.1", "DG1.5", "DG1.6" };
                     for( String adt : diagtitles )
                     {
                         String adt1 = adt.substring( 0, adt.indexOf( ".", 1 ) );
@@ -294,7 +305,7 @@ public class readXML
                             adt2 = adt;
                         }
                         String replace = adt1 + "/" + adt2;
-                        String temp    = (String) xpath.evaluate( "/HL7Message/" + replace + "", document, XPathConstants.STRING );
+                        String temp = (String) xpath.evaluate( "/HL7Message/" + replace + "", document, XPathConstants.STRING );
                         resultofdiags.add( temp );
                     }
                     diag.setMSGID( resultofdiags.get( 0 ) );
@@ -319,12 +330,12 @@ public class readXML
                 for( int i = 1; i <= len; i++ )
                 {
                     ArrayList<String> resultofdiags = new ArrayList<String>();
-                    DIAGNOSIS         diag          = new DIAGNOSIS();
-                    String[]          diagtitles    = { "MSH.9", "MSH.10", "PID.2", "PV1.19", "PID.5.1", "DG1.1", "DG1.3", "DG1.3.1", "DG1.5", "DG1.6" };
+                    DIAGNOSIS diag = new DIAGNOSIS();
+                    String[] diagtitles = { "MSH.9", "MSH.10", "PID.2", "PV1.19", "PID.5.1", "DG1.1", "DG1.3", "DG1.3.1", "DG1.5", "DG1.6" };
                     for( String adt : diagtitles )
                     {
                         String replace = "/HL7Message/" + returnReplace( adt ).replace( "DG1/", "DG1[" + i + "]/" );
-                        String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                        String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                         resultofdiags.add( temp );
                     }
                     diag.setMSGID( resultofdiags.get( 0 ) );
@@ -343,15 +354,15 @@ public class readXML
             }
 
             // 存储基本信息
-            ArrayList<BASICINFO> infos   = new ArrayList<BASICINFO>();
-            BASICINFO            info    = new BASICINFO();
-            String[]             adts    = { "MSH.9", "MSH.10", "EVN.1", "EVN.2", "PID.2", "PID.3", "PID.5.1", "PID.7", "PID.8", "PID.11", "PID.11", "PID.13", "PID.14", "NK1.4.1", "NK1.2", "NK1.4.1", "NK1.5", "PV1.2", "PV1.3.1", "PV1.3.2", "PV1.3.3", "PV1.3.4", "PV1.3.10", "PV1.6.1", "PV1.6.2", "PV1.6.3", "PV1.6.4", "PV1.7", "PV1.19", "PV1.44", "PV1.45" };
-            ArrayList<String>    results = new ArrayList<String>();
+            ArrayList<BASICINFO> infos = new ArrayList<BASICINFO>();
+            BASICINFO info = new BASICINFO();
+            String[] adts = { "MSH.9", "MSH.10", "EVN.1", "EVN.2", "PID.2", "PID.3", "PID.5.1", "PID.7", "PID.8", "PID.11", "PID.11", "PID.13", "PID.14", "NK1.4.1", "NK1.2", "NK1.4.1", "NK1.5", "PV1.2", "PV1.3.1", "PV1.3.2", "PV1.3.3", "PV1.3.4", "PV1.3.10", "PV1.6.1", "PV1.6.2", "PV1.6.3", "PV1.6.4", "PV1.7", "PV1.19", "PV1.44", "PV1.45" };
+            ArrayList<String> results = new ArrayList<String>();
             for( String adt : adts )
             {
                 // 根据“.”切割节点
                 String replace = "/HL7Message/" + returnReplace( adt );
-                String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                 results.add( temp );
             }
             if( results.size() > 11 )
@@ -395,7 +406,7 @@ public class readXML
         {
             String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.2", "ORC.5", "ORC.9", "ORC.12", "ORC.29", "TQ1.1", "TQ1.3", "TQ1.6", "TQ1.7", "TQ1.8", "TQ1.10", "TQ1.11", "RXO.1", "RXO.2", "RXO.4", "RXO.5", "RXO.20", "RXO.32", "RXR.1", "ORC.25", "RXO.24.1", "RXO.24.2", "RXO.24.4" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/ORC/ORC.1/text()", document, XPathConstants.NODESET );
-            int      len  = lens.getLength();
+            int len = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
             ArrayList<List<String>> resultss = new ArrayList<>();
             for( int l = 1; l <= len; l++ )
@@ -404,7 +415,7 @@ public class readXML
                 for( String adt : adts )
                 {
                     String replace = "/HL7Message/" + returnReplace( adt ).replace( "ORC/", "ORC[" + l + "]/" ).replace( "TQ1/", "TQ1[" + l + "]/" ).replace( "RXO/", "RXO[" + l + "]/" ).replace( "RXR/", "RXR[" + l + "]/" );
-                    String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                    String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                     results.add( temp );
                 }
                 resultss.add( results );
@@ -459,7 +470,7 @@ public class readXML
         {
             String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.29", "OBR.1", "OBR.4", "OBX.1", "OBX.2", "OBX.3", "OBX.5", "OBX.6", "OBX.11", "OBX.14" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.14/text()", document, XPathConstants.NODESET );
-            int      len  = lens.getLength();
+            int len = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
             if( len >= 1 )
             {
@@ -470,7 +481,7 @@ public class readXML
                     for( String adt : adts )
                     {
                         String replace = "/HL7Message/" + returnReplace( adt ).replace( "OBX/", "OBX[" + l + "]/" );
-                        String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                        String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                         results.add( temp );
                     }
                     resultss.add( results );
@@ -520,7 +531,7 @@ public class readXML
             // logger.info("【getFiletoDB】报告份数obr子项lenobr个数："+lenobr.getLength());
 
             NodeList obxnodelist = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.1/text()", document, XPathConstants.NODESET );
-            int      obxitem1    = 0;
+            int obxitem1 = 0;
             for( int n = 0; n < obxnodelist.getLength(); n++ )
             {
                 if( "1".equals( obxnodelist.item( n ).getNodeValue() ) )
@@ -530,7 +541,7 @@ public class readXML
             }
             // 根据obx的个数判断所有报告的子项有多少
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.17/text()", document, XPathConstants.NODESET );
-            int      len  = lens.getLength();
+            int len = lens.getLength();
             // logger.info("【getFiletoDB】子项份数obx子项lenobx个数："+len);
             int lenosbr = obxitem1 > lenobr.getLength() ? lenobr.getLength() : obxitem1;
             // 有多份报告时，先获取每份报告的子数目
@@ -549,8 +560,8 @@ public class readXML
                 }
 
                 // 转换start的位置
-                ArrayList<Integer> num        = new ArrayList<Integer>();
-                int                numforlast = 0;
+                ArrayList<Integer> num = new ArrayList<Integer>();
+                int numforlast = 0;
                 for( int r = 1; r < lenosbr; r++ )
                 {
                     num.add( start.get( r ) - start.get( r - 1 ) );
@@ -565,7 +576,7 @@ public class readXML
                     for( int u = 1; u <= num.get( t - 1 ); u++ )
                     {
                         ArrayList<String> results = new ArrayList<String>();
-                        int               all     = 0;
+                        int all = 0;
                         for( int v = 0; v < t - 1; v++ )
                         {
                             all += num.get( v );
@@ -632,7 +643,7 @@ public class readXML
                 if( len == 0 )
                 {
                     lens = (NodeList) xpath.evaluate( "/HL7Message/OBR/OBR.25/text()", document, XPathConstants.NODESET );
-                    len  = lens.getLength();
+                    len = lens.getLength();
                     // logger.info("【getFiletoDB】共存在"+len+"条sss患者数据");
                 }
                 if( len >= 1 )
@@ -644,7 +655,7 @@ public class readXML
                         for( String adt : adts )
                         {
                             String replace = "/HL7Message/" + returnReplace( adt ).replace( "OBR/", "OBR[" + lenobr.getLength() + "]/" ).replace( "OBX/", "OBX[" + l + "]/" );
-                            String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                            String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                             results.add( temp );
                         }
                         resultss.add( results );
@@ -700,10 +711,10 @@ public class readXML
             // ,"AIP.1","AIP.3.1","AIP.3.2","AIP.4.1","AIP.4.2"};
 
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/SCH/SCH.2/text()", document, XPathConstants.NODESET );
-            int      len  = lens.getLength();
+            int len = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
             NodeList lensAIP = (NodeList) xpath.evaluate( "/HL7Message/AIP/AIP.1/text()", document, XPathConstants.NODESET );
-            int      lenAIP  = lensAIP.getLength();
+            int lenAIP = lensAIP.getLength();
             // logger.info("【getFiletoDB】共存在"+lenAIP+"条AIP数据");
             if( len > 0 )
             {
@@ -714,7 +725,7 @@ public class readXML
                     for( String adt : adts )
                     {
                         String replace = "/HL7Message/" + returnReplace( adt );
-                        String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                        String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                         results.add( temp );
                     }
                     resultss.add( results );
@@ -759,34 +770,34 @@ public class readXML
                             for( int aip = 1; aip <= lenAIP; aip++ )
                             {
                                 String replace = "/HL7Message/" + returnReplace( "AIP.4.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
-                                String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                                String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                                 // ,"AIP.1","AIP.3.1","AIP.3.2","AIP.4.1","AIP.4.2"};
                                 if( temp.equals( "FPA" ) )
                                 {
-                                    String replacefpa     = "/HL7Message/" + returnReplace( "AIP.3.2" ).replace( "AIP/", "AIP[" + aip + "]/" );
+                                    String replacefpa = "/HL7Message/" + returnReplace( "AIP.3.2" ).replace( "AIP/", "AIP[" + aip + "]/" );
                                     String replacefpacode = "/HL7Message/" + returnReplace( "AIP.3.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
-                                    String fpa            = (String) xpath.evaluate( replacefpa, document, XPathConstants.STRING );
-                                    String fpacode        = (String) xpath.evaluate( replacefpacode, document, XPathConstants.STRING );
+                                    String fpa = (String) xpath.evaluate( replacefpa, document, XPathConstants.STRING );
+                                    String fpacode = (String) xpath.evaluate( replacefpacode, document, XPathConstants.STRING );
                                     anti.setSURGEON( fpa );
                                     anti.setSURGEONCODE( fpacode );
 
                                 }
                                 else if( temp.equals( "FPB" ) )
                                 {
-                                    String replacefpb     = "/HL7Message/" + returnReplace( "AIP.3.2" ).replace( "AIP/", "AIP[" + aip + "]/" );
+                                    String replacefpb = "/HL7Message/" + returnReplace( "AIP.3.2" ).replace( "AIP/", "AIP[" + aip + "]/" );
                                     String replacefpbcode = "/HL7Message/" + returnReplace( "AIP.3.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
-                                    String fpb            = (String) xpath.evaluate( replacefpb, document, XPathConstants.STRING );
-                                    String fpbcode        = (String) xpath.evaluate( replacefpbcode, document, XPathConstants.STRING );
+                                    String fpb = (String) xpath.evaluate( replacefpb, document, XPathConstants.STRING );
+                                    String fpbcode = (String) xpath.evaluate( replacefpbcode, document, XPathConstants.STRING );
                                     anti.setFIRSTAS( fpb );
                                     anti.setFIRSTASCODE( fpbcode );
 
                                 }
                                 else if( temp.equals( "FPC" ) )
                                 {
-                                    String replacefpc     = "/HL7Message/" + returnReplace( "AIP.3.2" ).replace( "AIP/", "AIP[" + aip + "]/" );
+                                    String replacefpc = "/HL7Message/" + returnReplace( "AIP.3.2" ).replace( "AIP/", "AIP[" + aip + "]/" );
                                     String replacefpccode = "/HL7Message/" + returnReplace( "AIP.3.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
-                                    String fpc            = (String) xpath.evaluate( replacefpc, document, XPathConstants.STRING );
-                                    String fpccode        = (String) xpath.evaluate( replacefpccode, document, XPathConstants.STRING );
+                                    String fpc = (String) xpath.evaluate( replacefpc, document, XPathConstants.STRING );
+                                    String fpccode = (String) xpath.evaluate( replacefpccode, document, XPathConstants.STRING );
                                     anti.setANESTHESIA( fpc );
                                     anti.setANESTHESIACODE( fpccode );
                                 }
@@ -804,12 +815,12 @@ public class readXML
         {
             String[] adts = { "MSH.9", "MSH.10", "PID.2", "PID.3.1", "PID.5", "PV1.19", "PV1.3.1", "PV1.3.2", "PV1.3.3", "ORC.1", "ORC.2", "ORC.29", "OBR.1", "OBR.3", "OBR.4", "OBR.22", "OBR.24", "OBR.25", "OBR.47.2", "OBX.1", "OBX.2", "OBX.3", "OBX.5.1", "OBX.5.2", "OBX.8", "OBX.11", "OBX.17" };
             NodeList lens = (NodeList) xpath.evaluate( "/HL7Message/OBX/OBX.17/text()", document, XPathConstants.NODESET );
-            int      len  = lens.getLength();
+            int len = lens.getLength();
             // logger.info("【getFiletoDB】共存在"+len+"条患者数据");
             if( len == 0 )
             {
                 lens = (NodeList) xpath.evaluate( "/HL7Message/OBR/OBR.25/text()", document, XPathConstants.NODESET );
-                len  = lens.getLength();
+                len = lens.getLength();
                 // logger.info("【getFiletoDB】共存在"+len+"条sss患者数据");
                 flag = true;
             }
@@ -822,7 +833,7 @@ public class readXML
                     for( String adt : adts )
                     {
                         String replace = "/HL7Message/" + returnReplace( adt ).replace( "OBX/", "OBX[" + l + "]/" );
-                        String temp    = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
+                        String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                         results.add( temp );
                     }
                     resultss.add( results );
