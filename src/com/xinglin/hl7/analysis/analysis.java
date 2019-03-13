@@ -134,7 +134,6 @@ public class analysis
         }
         catch( Exception e )
         {
-
             logger.error( "【analysis】【MoveFile】", e );
             e.printStackTrace();
         }
