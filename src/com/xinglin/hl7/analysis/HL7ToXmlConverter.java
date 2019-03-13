@@ -25,23 +25,14 @@ import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-/**
- * @author xinglinyg
- *
- */
 public class HL7ToXmlConverter
 {
-
-    /**
-     * @throws IOException
-     * 
-     */
     private static Logger logger = Logger.getLogger( HL7ToXmlConverter.class.getName() );
 
     public static String ConvertToXml( String sHL7, String filename ) throws IOException
     {
         Document document = ConvertToXmlObject( sHL7 );
-        String   hl7str   = document.asXML();
+        String hl7str = document.asXML();
         writeDocument( document, "D:/runtime/hl7/savedxml/" + filename + ".xml" );
         return hl7str;
     }
@@ -50,12 +41,12 @@ public class HL7ToXmlConverter
     {
         try
         {
-            TransformerFactory tf          = TransformerFactory.newInstance();
-            Transformer        transformer = tf.newTransformer();
-            DOMSource          source      = new DOMSource( document );
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            DOMSource source = new DOMSource( document );
             transformer.setOutputProperty( OutputKeys.ENCODING, "UTF-8" );
             transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
-            PrintWriter  pw     = new PrintWriter( new FileOutputStream( filename ) );
+            PrintWriter pw = new PrintWriter( new FileOutputStream( filename ) );
             StreamResult result = new StreamResult( pw );
             transformer.transform( source, result );
         }
@@ -66,7 +57,6 @@ public class HL7ToXmlConverter
         }
         catch( IOException exp )
         {
-
             logger.error( "【HL7ToXmlConverter】【createXMLByDoc】", exp );
             exp.printStackTrace();
         }
@@ -105,12 +95,10 @@ public class HL7ToXmlConverter
                 Element el = document.getRootElement().addElement( sFields[0] );
 
                 // 循环每一行
-                Boolean isMsh = true;
+                // Boolean isMsh = true;
                 for( int a = 1; a < sFields.length; a++ )
                 {
-
                     // 是否包括HL7的连接符^~\\&
-
                     if( sFields[a].indexOf( '^' ) > 0 || sFields[a].indexOf( '~' ) > 0 || sFields[a].indexOf( '\\' ) > 0 )
                     // if (sFields[a].indexOf('^')>0 || sFields[a].indexOf('~')>0 || sFields[a].indexOf('\\')>0 || sFields[a].indexOf('&')>0 )
                     {// 0:如果这一行有任一分隔符
@@ -120,25 +108,22 @@ public class HL7ToXmlConverter
                         // 通过~分隔
                         String[] sComponents = GetRepetitions( sFields[a] );
                         if( sComponents.length > 1 )
-                        {// 1:如果可以分隔 0001^郭靖^体检号^EQ^AND~0002^东一区^病区号^EQ^AND
-
+                        {
+                            // 1:如果可以分隔 0001^郭靖^体检号^EQ^AND~0002^东一区^病区号^EQ^AND
                             for( int b = 0; b < sComponents.length; b++ )
                             {
                                 // Element fieldEl1 = el.addElement(sFields[0] + "." + a);
                                 CreateComponents( el, sComponents[b], sFields[0], a, b );
                             }
-
                         }
                         else
-                        {// 1：如果真的只有一个值的 0001^郭靖^体检号^EQ^AND
-                         // 为字段创建第二级节点
-                         // Element fieldEl = el.addElement(sFields[0] + "." + a);
+                        {
+                            // 1：如果真的只有一个值的 0001^郭靖^体检号^EQ^AND
+                            // 为字段创建第二级节点
+                            // Element fieldEl = el.addElement(sFields[0] + "." + a);
                             CreateComponents( el, sFields[a], sFields[0], a, 0 );
-
                             // fieldEl.setText(sFields[a]+"11111111111111");
                         }
-
-                        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                     }
 
                     else
@@ -147,14 +132,10 @@ public class HL7ToXmlConverter
                         Element fieldEl = el.addElement( sFields[0] + "." + a );
 
                         fieldEl.setText( sFields[a] );
-
                     }
-
                 }
-
-            } // end if
-
-        } // end for
+            }
+        }
 
         // 修改MSH.1 和 MSH.2的值
 
@@ -194,7 +175,6 @@ public class HL7ToXmlConverter
             {
                 componentEl.setText( hl7Components );
             }
-
         }
         // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         return el;
@@ -249,7 +229,7 @@ public class HL7ToXmlConverter
     {
         Document output = DocumentHelper.createDocument();
         // 生成一个接点
-        Element rootNode = output.addElement( "HL7Message" );
+        output.addElement( "HL7Message" );
         return output;
     }
 
@@ -268,7 +248,7 @@ public class HL7ToXmlConverter
 
     public static String GetText( Document document, String path, int index )
     {
-        List nodes = document.selectNodes( "HL7Message/" + path );
+        List<?> nodes = document.selectNodes( "HL7Message/" + path );
         if( nodes != null )
         {
             return ( (Node) nodes.get( index ) ).getText();
@@ -277,14 +257,11 @@ public class HL7ToXmlConverter
         {
             return null;
         }
-
     }
 
-    public static List GetTexts( Document document, String path )
+    public static List<?> GetTexts( Document document, String path )
     {
-        List nodes = document.selectNodes( "HL7Message/" + path );
-        return nodes;
-
+        return document.selectNodes( "HL7Message/" + path );
     }
 
     public static void writeDocument( Document document, String filepath )
@@ -310,5 +287,4 @@ public class HL7ToXmlConverter
             logger.error( "【HL7ToXmlConverter】【createXMLByDoc】", e );
         }
     }
-
 }
