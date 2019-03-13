@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,30 +7,19 @@ import java.util.ArrayList;
 import com.DAO.IXrayDAO;
 import com.VO.XRAY;
 
-/**
- * @author baobao
- *
- */
 public class XrayDAOimpl implements IXrayDAO
 {
-
-    /**
-     * 
-     */
-
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public XrayDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<XRAY> xray ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean result = false;
         pstmt = conn.prepareStatement( " INSERT INTO HL7_XRAY (MSGTYPE, MSGID, PATIENTID, IDNO, PNAME, VISITD, PDEPT, PWARD, PBEDNO, ORCID,"
                 + " ORCNO, ORCTYPE, OBRNO, REPNO, OBRNAME, REPTIME, OBRTYPE, OBRSTATUS, OBRREPNAME, OBXNO, OBXTYPE, OBXNAME, "
@@ -81,5 +67,4 @@ public class XrayDAOimpl implements IXrayDAO
         }
         return result;
     }
-
 }
