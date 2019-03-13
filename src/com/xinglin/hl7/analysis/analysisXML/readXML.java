@@ -33,10 +33,6 @@ import com.VO.XRAY;
 import com.factory.DAOFactory;
 import com.xinglin.hl7.listener.HL7_listener;
 
-/**
- * @author Administrator
- *
- */
 public class readXML
 {
     private static Logger logger = Logger.getLogger( readXML.class.getName() );
@@ -69,8 +65,8 @@ public class readXML
 
     public static void insertXMl() throws Throwable
     {
-        SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd" );// 设置日期格式2
-        String nowDay = df.format( new Date() );
+        // SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd" );
+        // String nowDay = df.format( new Date() );
 
         long startTime = System.currentTimeMillis();
         String sour = "d:/runtime/hl7/rerun/xml/";
@@ -80,7 +76,7 @@ public class readXML
         if( files.length != 0 )
         {
             logger.info( "路径下文件共有" + files.length + "个" );
-            int i = 0;
+            // int i = 0;
 
             Stream.of( files )
                     .parallel()
@@ -123,7 +119,6 @@ public class readXML
                         {
                             logger.error( t.getMessage(), t );
                         }
-
                     } );
         }
         else
@@ -172,18 +167,14 @@ public class readXML
                         logger.info( "【readXML】XMl数据已移动" + file.getName() );
                         HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据已移动" + file.getName() + "\n" );
                         HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
-
                     }
                     else
                     {
                         logger.error( "【readXML】XMl数据移动失败" + file.getName() );
                         HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】" + "XMl数据移动失败" + file.getName() + "\n" );
                         HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
-
                     }
                 }
-                ;
-
             }
         }
         else
@@ -207,7 +198,6 @@ public class readXML
         File file = new File( filename );
         if( file.exists() )
         {
-
             logger.info( "【readXML】开始处理文件：" + filename );
             HL7_listener.getLogTextProxy().text( text, "【" + df.format( new Date() ) + "】【readXML】开始处理文件：" + filename + "\n" );
             // 获取读取文件的类型
@@ -237,8 +227,6 @@ public class readXML
                     HL7_listener.getLogTextProxy().text( text, "########################################################################################################################################\n" );
                 }
             }
-            ;
-
         }
         else
         {
@@ -486,7 +474,7 @@ public class readXML
                     }
                     resultss.add( results );
                 }
-                ArrayList<TEMPERATURE> TEMPlist = new ArrayList<TEMPERATURE>();
+                ArrayList<TEMPERATURE> tempList = new ArrayList<TEMPERATURE>();
                 if( resultss.size() >= 1 )
                 {
                     for( int i = 0; i < resultss.size(); i++ )
@@ -515,11 +503,11 @@ public class readXML
                         // 筛选只保留体温体重
                         if( resultss.get( i ).get( 15 ).equals( "TW体温" ) || resultss.get( i ).get( 15 ).equals( "TZ体重" ) || resultss.get( i ).get( 15 ).equals( "DBCS大便次数" ) )
                         {
-                            TEMPlist.add( anti );
+                            tempList.add( anti );
                         }
                     }
                 }
-                flag = DAOFactory.getTemperatureDAOInstance().doCreate( TEMPlist );
+                flag = DAOFactory.getTemperatureDAOInstance().doCreate( tempList );
             }
 
         }
@@ -591,7 +579,7 @@ public class readXML
                         }
                         resultss.add( results );
                     }
-                    ArrayList<LISREPORT> TEMPlist = new ArrayList<LISREPORT>();
+                    ArrayList<LISREPORT> tempList = new ArrayList<LISREPORT>();
                     if( resultss.size() >= 1 )
                     {
                         for( int i = 0; i < resultss.size(); i++ )
@@ -629,10 +617,10 @@ public class readXML
                             anti.setOBXNAMECODE( (String) resultss.get( i ).get( 29 ) );
                             anti.setSPECIMEN( (String) resultss.get( i ).get( 30 ) );
                             anti.setRectime( (String) resultss.get( i ).get( 31 ) );
-                            TEMPlist.add( anti );
+                            tempList.add( anti );
                         }
                     }
-                    flag = DAOFactory.getLisreportDAOInstance().doCreate( TEMPlist );
+                    flag = DAOFactory.getLisreportDAOInstance().doCreate( tempList );
 
                 }
 
@@ -660,7 +648,7 @@ public class readXML
                         }
                         resultss.add( results );
                     }
-                    ArrayList<LISREPORT> TEMPlist = new ArrayList<LISREPORT>();
+                    ArrayList<LISREPORT> tempList = new ArrayList<LISREPORT>();
                     if( resultss.size() >= 1 )
                     {
                         for( int i = 0; i < resultss.size(); i++ )
@@ -698,10 +686,10 @@ public class readXML
                             anti.setREQTIME( (String) resultss.get( i ).get( 28 ) );
                             anti.setOBXNAMECODE( (String) resultss.get( i ).get( 29 ) );
                             anti.setSPECIMEN( (String) resultss.get( i ).get( 30 ) );
-                            TEMPlist.add( anti );
+                            tempList.add( anti );
                         }
                     }
-                    flag = DAOFactory.getLisreportDAOInstance().doCreate( TEMPlist );
+                    flag = DAOFactory.getLisreportDAOInstance().doCreate( tempList );
                 }
             }
         }
@@ -730,7 +718,7 @@ public class readXML
                     }
                     resultss.add( results );
 
-                    ArrayList<OPERATIONS> TEMPlist = new ArrayList<OPERATIONS>();
+                    ArrayList<OPERATIONS> tempList = new ArrayList<OPERATIONS>();
                     if( resultss.size() >= 1 )
                     {
                         for( int i = 0; i < resultss.size(); i++ )
@@ -803,10 +791,10 @@ public class readXML
                                 }
                             }
 
-                            TEMPlist.add( anti );
+                            tempList.add( anti );
                         }
                     }
-                    flag = DAOFactory.getOperationsDAOInstance().doCreate( TEMPlist );
+                    flag = DAOFactory.getOperationsDAOInstance().doCreate( tempList );
                 }
 
             }
@@ -838,7 +826,7 @@ public class readXML
                     }
                     resultss.add( results );
                 }
-                ArrayList<XRAY> TEMPlist = new ArrayList<XRAY>();
+                ArrayList<XRAY> tempList = new ArrayList<XRAY>();
                 if( resultss.size() >= 1 )
                 {
                     for( int i = 0; i < resultss.size(); i++ )
@@ -871,12 +859,11 @@ public class readXML
                         anti.setOBXUNIT( (String) resultss.get( i ).get( 24 ) );
                         anti.setOBXFLAG( (String) resultss.get( i ).get( 25 ) );
                         anti.setOBXMETHOD( (String) resultss.get( i ).get( 26 ) );
-                        TEMPlist.add( anti );
-
+                        tempList.add( anti );
                     }
                 }
 
-                flag = DAOFactory.getXrayDAOInstance().doCreate( TEMPlist );
+                flag = DAOFactory.getXrayDAOInstance().doCreate( tempList );
             }
         }
         return flag;
@@ -896,6 +883,5 @@ public class readXML
 
         String xmlStr = bos.toString();
         return xmlStr;
-
     }
 }
