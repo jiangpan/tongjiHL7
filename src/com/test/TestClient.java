@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class Client implements ActionListener
+public class TestClient implements ActionListener
 {
     // 这里有两个图形界面，一个是连接的frame,另一个和服务器通信的界面frame1
     private JFrame frame;
@@ -45,14 +45,14 @@ public class Client implements ActionListener
     // 将输入框字符串转换为字符串流所需的字符串的输入流
     static ByteArrayInputStream stringInputStream;
 
-    public Client()
+    public TestClient()
     {
-        frame      = new JFrame();
-        adress     = new JLabel( "IP 地址" );
-        port       = new JLabel( "端口号" );
+        frame = new JFrame();
+        adress = new JLabel( "IP 地址" );
+        port = new JLabel( "端口号" );
         adresstext = new JTextField( "127.0.0.1", 10 );
-        porttext   = new JTextField( "2000", 10 );
-        connect    = new JButton( "连接" );
+        porttext = new JTextField( "2000", 10 );
+        connect = new JButton( "连接" );
         // 连接界面的布局
         frame.setLayout( new FlowLayout() );
         frame.add( adress );
@@ -64,8 +64,8 @@ public class Client implements ActionListener
         frame.setSize( 200, 150 );
         connect.addActionListener( this );
         // 通信界面的实例化
-        frame1     = new JFrame();
-        shuru      = new JLabel( "请输入" );
+        frame1 = new JFrame();
+        shuru = new JLabel( "请输入" );
         shurukuang = new JTextArea( "请输入····", 5, 40 );
 
         panel1 = new JPanel();
@@ -73,8 +73,8 @@ public class Client implements ActionListener
         panel1.add( shurukuang );
         panel1.setLayout( new FlowLayout() );
 
-        send    = new JButton( "发送" );
-        panel2  = new JPanel();
+        send = new JButton( "发送" );
+        panel2 = new JPanel();
         jieshou = new JLabel( "已接受" );
 
         jieshoukuang = new TextArea( 8, 60 );
@@ -119,7 +119,7 @@ public class Client implements ActionListener
         {
             // 将输入框中的字符串转换为字符串流
             stringInputStream = new ByteArrayInputStream( ( shurukuang.getText() ).getBytes() );
-            br2               = new BufferedReader( new InputStreamReader( stringInputStream ) );
+            br2 = new BufferedReader( new InputStreamReader( stringInputStream ) );
             String msg;
             try
             {
@@ -149,9 +149,9 @@ public class Client implements ActionListener
 
     public static void main( String[] args ) throws IOException
     {
-        new Client(); // 实例化连接界面
+        new TestClient(); // 实例化连接界面
         client = new Socket( "127.0.0.1", 2000 );
-        br1    = new BufferedReader( new InputStreamReader( client.getInputStream() ) ); // 从服务端接受的数据
-        ps     = new PrintStream( client.getOutputStream() );                            // 从客户端输出的数据
+        br1 = new BufferedReader( new InputStreamReader( client.getInputStream() ) ); // 从服务端接受的数据
+        ps = new PrintStream( client.getOutputStream() ); // 从客户端输出的数据
     }
 }

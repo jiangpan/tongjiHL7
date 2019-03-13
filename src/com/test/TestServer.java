@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.test;
 
 import java.io.BufferedReader;
@@ -13,17 +10,14 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-/**
- * @author baobao
- *
- */
-public class Server
+public class TestServer
 {
-    static BufferedReader br;   // 服务器端的输入流
-    static PrintStream    ps;   // 服务器端的输出流
-    static JTextArea      text; // 服务器相关的界面组件
+    static BufferedReader br;
+    static PrintStream    ps;
+    static JTextArea      text;
+    ServerSocket          server;
 
-    public Server()
+    public TestServer()
     {
         JFrame frame = new JFrame( "服务器端" );
         text = new JTextArea();
@@ -34,11 +28,9 @@ public class Server
         text.setEditable( false );
     }
 
-    public static void main( String[] args ) throws Exception
+    public void run() throws Throwable
     {
-        new Server(); // 生成服务器界面
-        // 通过服务器端构造函数 ServerSocket(port) 实例化一个服务器端口
-        ServerSocket server = new ServerSocket( 2000 );
+        server = new ServerSocket( 2000 );
         text.append( "监听2000端口" + "\n" );
         Socket client = server.accept();
         br = new BufferedReader( new InputStreamReader( client.getInputStream() ) );
@@ -59,5 +51,10 @@ public class Server
         ps.close();
         br.close();
         client.close();
+    }
+
+    public static void main( String[] args ) throws Throwable
+    {
+        new TestServer().run();
     }
 }
