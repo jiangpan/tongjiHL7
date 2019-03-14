@@ -4,7 +4,7 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import com.xinglin.hl7.analysis.analysisXML.readConfig;
+import com.xinglin.hl7.analysis.xml.readConfig;
 
 public class LogTextProxy
 {

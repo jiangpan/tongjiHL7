@@ -22,7 +22,6 @@ public class Save
             fop.write( contentInBytes );
             fop.flush();
             fop.close();
-            // logger.info("Save Done");
             result = true;
 
         }
@@ -30,7 +29,6 @@ public class Save
         {
             e.printStackTrace();
         }
-        // logger.info(url);
         return result;
     }
 }

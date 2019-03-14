@@ -6,11 +6,6 @@ public class TestThread extends Thread
 {
     private static final AtomicInteger count = new AtomicInteger();
 
-    /*
-     * public static void main(String[] args) {
-     * (new TestThread()).start();
-     * }
-     */
     @Override
     public void run()
     {

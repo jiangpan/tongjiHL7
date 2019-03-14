@@ -25,7 +25,6 @@ public class TimerManager
      */
     public static void main( String[] args )
     {
-
         logger.info( "开始删除计划" );
         new TimerManager();
 
@@ -48,7 +47,7 @@ public class TimerManager
             date = this.addDay( date, 1 );
         }
         Timer timer = new Timer();
-        Task  task  = new Task();
+        Task task = new Task();
         // 安排指定的任务在指定的时间开始进行重复的固定延迟执行。
         timer.schedule( task, date, PERIOD_DAY );
     }
@@ -66,7 +65,6 @@ public class TimerManager
 
 class Task extends TimerTask
 {
-
     private static Logger logger = Logger.getLogger( TimerTask.class.getName() );
 
     public void run()
@@ -74,16 +72,16 @@ class Task extends TimerTask
         for( int day = 3; day < 8; day++ )
         {
             logger.info( "开始压缩计划!day = " + day );
-            SimpleDateFormat dft       = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
-            Date             beginDate = new Date();
-            Calendar         date      = Calendar.getInstance();
+            SimpleDateFormat dft = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
+            Date beginDate = new Date();
+            Calendar date = Calendar.getInstance();
             date.setTime( beginDate );
             date.set( Calendar.DATE, date.get( Calendar.DATE ) - day );
 
-            String            fileName       = dft.format( date.getTime() );
-            String            sourceFilePath = "D:\\runtime\\hl7\\files";
-            String            zipFilePath    = "D:\\runtime\\hl7\\backupZIP\\fileszip";
-            ArrayList<String> filelist       = FileToZip.fileToZip( sourceFilePath, zipFilePath, fileName );
+            String fileName = dft.format( date.getTime() );
+            String sourceFilePath = "D:\\runtime\\hl7\\files";
+            String zipFilePath = "D:\\runtime\\hl7\\backupZIP\\fileszip";
+            ArrayList<String> filelist = FileToZip.fileToZip( sourceFilePath, zipFilePath, fileName );
             if( filelist.size() > 0 )
             {
                 boolean flag = FileDelete.deleteDirectory( sourceFilePath, fileName );
@@ -94,10 +92,10 @@ class Task extends TimerTask
             {
                 logger.info( "【Task】未发现需要压缩的文件" );
             }
-            String            fileName2       = dft.format( date.getTime() );
-            String            sourceFilePath2 = "D:\\runtime\\hl7\\oldXML";
-            String            zipFilePath2    = "D:\\runtime\\hl7\\backupZIP\\xmlzip";
-            ArrayList<String> filelist2       = FileToZip.fileToZip( sourceFilePath2, zipFilePath2, fileName2 );
+            String fileName2 = dft.format( date.getTime() );
+            String sourceFilePath2 = "D:\\runtime\\hl7\\oldXML";
+            String zipFilePath2 = "D:\\runtime\\hl7\\backupZIP\\xmlzip";
+            ArrayList<String> filelist2 = FileToZip.fileToZip( sourceFilePath2, zipFilePath2, fileName2 );
             if( filelist2.size() > 0 )
             {
                 boolean flag = FileDelete.deleteDirectory( sourceFilePath2, fileName2 );
