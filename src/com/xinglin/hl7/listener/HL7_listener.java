@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.xinglin.hl7.listener;
 
 import java.awt.event.WindowAdapter;
@@ -25,13 +22,9 @@ import javax.swing.JTextArea;
 import org.apache.log4j.Logger;
 
 import com.xinglin.hl7.analysis.analysis;
-import com.xinglin.hl7.analysis.analysisXML.readConfig;
-import com.xinglin.hl7.analysis.analysisXML.readXML;
+import com.xinglin.hl7.analysis.xml.readConfig;
+import com.xinglin.hl7.analysis.xml.readXML;
 
-/**
- * @author Administrator
- *
- */
 public class HL7_listener
 {
     private static Logger logger = Logger.getLogger( HL7_listener.class.getName() );
@@ -144,7 +137,7 @@ class ReadHandlerThread implements Runnable
     public ReadHandlerThread( Socket client, JTextArea text )
     {
         this.client = client;
-        this.text   = text;
+        this.text = text;
     }
 
     @Override
@@ -152,25 +145,25 @@ class ReadHandlerThread implements Runnable
     {
 
         BufferedReader br = null; // 服务器端的输入流
-        PrintStream    ps = null; // 服务器端的输出流
+        PrintStream ps = null; // 服务器端的输出流
         try
         {
             int i = 0;
             br = new BufferedReader( new InputStreamReader( client.getInputStream(), "utf-8" ) );
             ps = new PrintStream( client.getOutputStream() );
-            String reciver;           // 每次接受内容
-            String input       = "";  // 完整消息
-            String filename    = null;// 保存文件名
+            String reciver; // 每次接受内容
+            String input = ""; // 完整消息
+            String filename = null;// 保存文件名
             String mshtypename = null;// MSH id
             while( ( reciver = br.readLine() ) != null )
             {
                 // 读取客户端数据
 
-                SimpleDateFormat df       = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
-                SimpleDateFormat df2      = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:sss" );
-                SimpleDateFormat df3      = new SimpleDateFormat( "yyyy\\MM\\dd\\HH\\" );
-                String           fileTime = df.format( new Date() );
-                String           filePath = df3.format( new Date() );
+                SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
+                SimpleDateFormat df2 = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss:sss" );
+                SimpleDateFormat df3 = new SimpleDateFormat( "yyyy\\MM\\dd\\HH\\" );
+                String fileTime = df.format( new Date() );
+                String filePath = df3.format( new Date() );
 
                 File saveFile = new File( "d:/runtime/hl7/files/" + filePath );
 
@@ -185,7 +178,7 @@ class ReadHandlerThread implements Runnable
                 {
                     String[] reciversp = reciver.split( "\\|" );
                     mshtypename = "_" + reciversp[9];
-                    reciver     = reciver.substring( reciver.indexOf( "MSH" ) );
+                    reciver = reciver.substring( reciver.indexOf( "MSH" ) );
                 }
 
                 // 当识别到结束字符
@@ -209,8 +202,8 @@ class ReadHandlerThread implements Runnable
                         logger.info( "【ReadHandlerThread】文件保存为" + saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt" );
                         // String type = analysis.toXml( input, filetime + mshtypename + "_" + i + ".txt" );
 
-                        String            type = analysis.readFile( saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt" );
-                        ArrayList<String> ack  = readConfig.CreateAck( "d:/runtime/hl7/typexml/" + type + "_" + fileTime + mshtypename + "_" + i + ".txt.xml" );
+                        String type = analysis.readFile( saveFile.getAbsolutePath() + "\\" + fileTime + mshtypename + "_" + i + ".txt" );
+                        ArrayList<String> ack = readConfig.CreateAck( "d:/runtime/hl7/typexml/" + type + "_" + fileTime + mshtypename + "_" + i + ".txt.xml" );
                         filename = "d:/runtime/hl7/typexml/" + type + "_" + fileTime + mshtypename + "_" + i + ".txt.xml";
                         DataOutputStream dos = null;
                         dos = new DataOutputStream( client.getOutputStream() );
@@ -313,7 +306,7 @@ class WriteHandlerThread implements Runnable
 
     public WriteHandlerThread( Socket client, JTextArea text, String filename )
     {
-        this.text     = text;
+        this.text = text;
         this.filename = filename;
     }
 
