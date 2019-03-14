@@ -1,4 +1,4 @@
-package com.xinglin.hl7.analysis.analysisXML;
+package com.xinglin.hl7.analysis.xml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,15 +23,15 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import com.VO.ANTIBIOTICS;
-import com.VO.BASICINFO;
-import com.VO.DIAGNOSIS;
-import com.VO.LISREPORT;
-import com.VO.OPERATIONS;
-import com.VO.TEMPERATURE;
-import com.VO.XRAY;
-import com.factory.DAOFactory;
 import com.xinglin.hl7.listener.HL7_listener;
+import com.xinglin.hl7.tongji.dao.factory.DAOFactory;
+import com.xinglin.hl7.tongji.vo.Antibiotics;
+import com.xinglin.hl7.tongji.vo.Basicinfo;
+import com.xinglin.hl7.tongji.vo.Diagnosis;
+import com.xinglin.hl7.tongji.vo.LisReport;
+import com.xinglin.hl7.tongji.vo.Operation;
+import com.xinglin.hl7.tongji.vo.Temperature;
+import com.xinglin.hl7.tongji.vo.Xray;
 
 public class readXML
 {
@@ -274,11 +274,11 @@ public class readXML
             // 只有一个时
             if( len > 0 && len < 2 )
             {
-                ArrayList<DIAGNOSIS> diags = new ArrayList<DIAGNOSIS>();
+                ArrayList<Diagnosis> diags = new ArrayList<Diagnosis>();
                 for( int i = 0; i < len; i++ )
                 {
                     ArrayList<String> resultofdiags = new ArrayList<String>();
-                    DIAGNOSIS diag = new DIAGNOSIS();
+                    Diagnosis diag = new Diagnosis();
                     String[] diagtitles = { "MSH.9", "MSH.10", "PID.2", "PV1.19", "PID.5.1", "DG1.1", "DG1.3", "DG1.3.1", "DG1.5", "DG1.6" };
                     for( String adt : diagtitles )
                     {
@@ -296,16 +296,16 @@ public class readXML
                         String temp = (String) xpath.evaluate( "/HL7Message/" + replace + "", document, XPathConstants.STRING );
                         resultofdiags.add( temp );
                     }
-                    diag.setMSGID( resultofdiags.get( 0 ) );
-                    diag.setMSGTYPE( resultofdiags.get( 1 ) + "||" + file.getName() );
-                    diag.setPATIENT_ID( resultofdiags.get( 2 ) );
-                    diag.setVISIT_ID( resultofdiags.get( 3 ) );
-                    diag.setPNAME( resultofdiags.get( 4 ) );
-                    diag.setDIAGNOSIS_NO( resultofdiags.get( 5 ) );
-                    diag.setDIAGNOSIS_DESC( resultofdiags.get( 6 ) );
-                    diag.setDIAGNOSIS_CODE( resultofdiags.get( 7 ) );
-                    diag.setDIAGNOSIS_DATE( resultofdiags.get( 8 ) );
-                    diag.setDIAGNOSIS_TYPE( resultofdiags.get( 9 ) );
+                    diag.setMsgId( resultofdiags.get( 0 ) );
+                    diag.setMsgType( resultofdiags.get( 1 ) + "||" + file.getName() );
+                    diag.setPatientid( resultofdiags.get( 2 ) );
+                    diag.setVisitid( resultofdiags.get( 3 ) );
+                    diag.setPName( resultofdiags.get( 4 ) );
+                    diag.setDiagnosisNo( resultofdiags.get( 5 ) );
+                    diag.setDiagnosisDesc( resultofdiags.get( 6 ) );
+                    diag.setDiagnosisCode( resultofdiags.get( 7 ) );
+                    diag.setDiagnosisDate( resultofdiags.get( 8 ) );
+                    diag.setDiagnosisType( resultofdiags.get( 9 ) );
                     diags.add( diag );
                 }
                 DAOFactory.getDiagnosisDAOInstance().doCreate( diags );
@@ -314,11 +314,11 @@ public class readXML
             if( len > 1 )
             {
 
-                ArrayList<DIAGNOSIS> diags = new ArrayList<DIAGNOSIS>();
+                ArrayList<Diagnosis> diags = new ArrayList<Diagnosis>();
                 for( int i = 1; i <= len; i++ )
                 {
                     ArrayList<String> resultofdiags = new ArrayList<String>();
-                    DIAGNOSIS diag = new DIAGNOSIS();
+                    Diagnosis diag = new Diagnosis();
                     String[] diagtitles = { "MSH.9", "MSH.10", "PID.2", "PV1.19", "PID.5.1", "DG1.1", "DG1.3", "DG1.3.1", "DG1.5", "DG1.6" };
                     for( String adt : diagtitles )
                     {
@@ -326,24 +326,24 @@ public class readXML
                         String temp = (String) xpath.evaluate( replace, document, XPathConstants.STRING );
                         resultofdiags.add( temp );
                     }
-                    diag.setMSGID( resultofdiags.get( 0 ) );
-                    diag.setMSGTYPE( resultofdiags.get( 1 ) + "||" + file.getName() );
-                    diag.setPATIENT_ID( resultofdiags.get( 2 ) );
-                    diag.setVISIT_ID( resultofdiags.get( 3 ) );
-                    diag.setPNAME( resultofdiags.get( 4 ) );
-                    diag.setDIAGNOSIS_NO( resultofdiags.get( 5 ) );
-                    diag.setDIAGNOSIS_DESC( resultofdiags.get( 6 ) );
-                    diag.setDIAGNOSIS_CODE( resultofdiags.get( 7 ) );
-                    diag.setDIAGNOSIS_DATE( resultofdiags.get( 8 ) );
-                    diag.setDIAGNOSIS_TYPE( resultofdiags.get( 9 ) );
+                    diag.setMsgId( resultofdiags.get( 0 ) );
+                    diag.setMsgType( resultofdiags.get( 1 ) + "||" + file.getName() );
+                    diag.setPatientid( resultofdiags.get( 2 ) );
+                    diag.setVisitid( resultofdiags.get( 3 ) );
+                    diag.setPName( resultofdiags.get( 4 ) );
+                    diag.setDiagnosisNo( resultofdiags.get( 5 ) );
+                    diag.setDiagnosisDesc( resultofdiags.get( 6 ) );
+                    diag.setDiagnosisCode( resultofdiags.get( 7 ) );
+                    diag.setDiagnosisDate( resultofdiags.get( 8 ) );
+                    diag.setDiagnosisType( resultofdiags.get( 9 ) );
                     diags.add( diag );
                 }
                 DAOFactory.getDiagnosisDAOInstance().doCreate( diags );
             }
 
             // 存储基本信息
-            ArrayList<BASICINFO> infos = new ArrayList<BASICINFO>();
-            BASICINFO info = new BASICINFO();
+            ArrayList<Basicinfo> infos = new ArrayList<Basicinfo>();
+            Basicinfo info = new Basicinfo();
             String[] adts = { "MSH.9", "MSH.10", "EVN.1", "EVN.2", "PID.2", "PID.3", "PID.5.1", "PID.7", "PID.8", "PID.11", "PID.11", "PID.13", "PID.14", "NK1.4.1", "NK1.2", "NK1.4.1", "NK1.5", "PV1.2", "PV1.3.1", "PV1.3.2", "PV1.3.3", "PV1.3.4", "PV1.3.10", "PV1.6.1", "PV1.6.2", "PV1.6.3", "PV1.6.4", "PV1.7", "PV1.19", "PV1.44", "PV1.45" };
             ArrayList<String> results = new ArrayList<String>();
             for( String adt : adts )
@@ -355,37 +355,37 @@ public class readXML
             }
             if( results.size() > 11 )
             {
-                info.setMSGTYPE( results.get( 0 ) + "||" + file.getName() );
-                info.setMSGID( results.get( 1 ) );
-                info.setACTIONTYPE( results.get( 2 ) );
-                info.setACTIONTIME( results.get( 3 ) );
-                info.setPATIENTID( results.get( 4 ) );
-                info.setIDNO( results.get( 5 ) );
-                info.setPNAME( results.get( 6 ) );
-                info.setPBRITHDATE( results.get( 7 ) );
-                info.setPSEX( results.get( 8 ) );
-                info.setPADDRESS( results.get( 9 ) );
-                info.setPADDRESSNO( results.get( 10 ) );
-                info.setPPHONE( results.get( 11 ) );
-                info.setPMPHONE( results.get( 12 ) );
-                info.setMAILING_ADDRESS( results.get( 13 ) );
-                info.setNEXT_OF_KIN( results.get( 14 ) );
-                info.setNEXT_OF_KIN_ADDR( results.get( 15 ) );
-                info.setNEXT_OF_KIN_PHONE( results.get( 16 ) );
-                info.setPTYPE( results.get( 17 ) );
-                info.setPDEPT( results.get( 18 ) );
-                info.setPWARD( results.get( 19 ) );
-                info.setPBEDNO( results.get( 20 ) );
-                info.setPHLDY( results.get( 21 ) );
-                info.setPLOCATION( results.get( 22 ) );
-                info.setPLASTDEPT( results.get( 23 ) );
-                info.setPLASTWARD( results.get( 24 ) );
-                info.setPLASTBEDNO( results.get( 25 ) );
-                info.setPLASTHLDY( results.get( 26 ) );
-                info.setATTENDING_DOCTOR( results.get( 27 ) );
-                info.setVISITID( results.get( 28 ) );
-                info.setINTIME( results.get( 29 ) );
-                info.setOUTTIME( results.get( 30 ) );
+                info.setMsgType( results.get( 0 ) + "||" + file.getName() );
+                info.setMsgId( results.get( 1 ) );
+                info.setActiontype( results.get( 2 ) );
+                info.setActiontime( results.get( 3 ) );
+                info.setPatientid( results.get( 4 ) );
+                info.setIdno( results.get( 5 ) );
+                info.setName( results.get( 6 ) );
+                info.setBirthdate( results.get( 7 ) );
+                info.setSex( results.get( 8 ) );
+                info.setAddress( results.get( 9 ) );
+                info.setAddressno( results.get( 10 ) );
+                info.setPhone( results.get( 11 ) );
+                info.setMobilePhone( results.get( 12 ) );
+                info.setMailingAddress( results.get( 13 ) );
+                info.setNextOfKin( results.get( 14 ) );
+                info.setNextOfKinAddr( results.get( 15 ) );
+                info.setNextOfKinPhone( results.get( 16 ) );
+                info.setType( results.get( 17 ) );
+                info.setDept( results.get( 18 ) );
+                info.setWard( results.get( 19 ) );
+                info.setBedno( results.get( 20 ) );
+                info.setUnit( results.get( 21 ) );
+                info.setLocation( results.get( 22 ) );
+                info.setLastDept( results.get( 23 ) );
+                info.setLastWard( results.get( 24 ) );
+                info.setLastBedno( results.get( 25 ) );
+                info.setLastUnit( results.get( 26 ) );
+                info.setAttendingDoctor( results.get( 27 ) );
+                info.setVisitid( results.get( 28 ) );
+                info.setIntime( results.get( 29 ) );
+                info.setOuttime( results.get( 30 ) );
             }
             infos.add( info );
             flag = DAOFactory.getBasicinfoDAOInstance().doCreate( infos );
@@ -409,45 +409,45 @@ public class readXML
                 resultss.add( results );
 
             }
-            ArrayList<ANTIBIOTICS> antilist = new ArrayList<ANTIBIOTICS>();
+            ArrayList<Antibiotics> antilist = new ArrayList<Antibiotics>();
             if( resultss.size() >= 1 )
             {
                 for( int i = 0; i < resultss.size(); i++ )
                 {
-                    ANTIBIOTICS anti = new ANTIBIOTICS();
-                    anti.setMSGTYPE( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );// MSH.9
-                    anti.setMSGID( (String) resultss.get( i ).get( 1 ) );// MSH.10
-                    anti.setPATIENTID( (String) resultss.get( i ).get( 2 ) );// PID.2
-                    anti.setIDNO( (String) resultss.get( i ).get( 3 ) );// PID.3.1
-                    anti.setPNAME( (String) resultss.get( i ).get( 4 ) );// PID.5
-                    anti.setVISITD( (String) resultss.get( i ).get( 5 ) );// PV1.19
-                    anti.setPDEPT( (String) resultss.get( i ).get( 6 ) );// PV1.3.1
-                    anti.setPWARD( (String) resultss.get( i ).get( 7 ) );// PV1.3.2
-                    anti.setPBEDNO( (String) resultss.get( i ).get( 8 ) );// PV1.3.3
-                    anti.setSTATUSID( (String) resultss.get( i ).get( 9 ) );// ORC.1
-                    anti.setORDERNO( (String) resultss.get( i ).get( 10 ) );// ORC.2
-                    anti.setSTATUS( (String) resultss.get( i ).get( 11 ) );// ORC.5
-                    anti.setORDERTIME( (String) resultss.get( i ).get( 12 ) );// ORC.9
-                    anti.setORDERDOCTOR( (String) resultss.get( i ).get( 13 ) );// ORC.12
-                    anti.setORDERTYPE( (String) resultss.get( i ).get( 14 ) );// ORC.29
-                    anti.setTQNO( (String) resultss.get( i ).get( 15 ) );// TQ1.1
-                    anti.setFREQUENCY( (String) resultss.get( i ).get( 16 ) );// TQ1.3
-                    anti.setFORTIME( (String) resultss.get( i ).get( 17 ) );// TQ1.6
-                    anti.setSTARTTIME( (String) resultss.get( i ).get( 18 ) );// TQ1.7
-                    anti.setENDTIME( (String) resultss.get( i ).get( 19 ) );// TQ1.8
-                    anti.setTQTYPE( (String) resultss.get( i ).get( 20 ) );// TQ1.10
-                    anti.setTQCONT( (String) resultss.get( i ).get( 21 ) );// TQ1.11
-                    anti.setORDERTEXT( (String) resultss.get( i ).get( 22 ) );// RXO.1
-                    anti.setDOSAGE( (String) resultss.get( i ).get( 23 ) );// RXO.2
-                    anti.setDOSAGEUNITS( (String) resultss.get( i ).get( 24 ) );// RXO.4
-                    anti.setDOSAGETYPE( (String) resultss.get( i ).get( 25 ) );// RXO.5
-                    anti.setREMARK( (String) resultss.get( i ).get( 26 ) );// RXO.20
-                    anti.setROOM( (String) resultss.get( i ).get( 27 ) );// RXO.32
-                    anti.setADMINISTRATION( (String) resultss.get( i ).get( 28 ) );// RXR.1
-                    anti.setUSE_TIME( (String) resultss.get( i ).get( 29 ) );// ORC.25
-                    anti.setGOAL( (String) resultss.get( i ).get( 32 ) );
-                    anti.setANTITYPECODE( (String) resultss.get( i ).get( 30 ) );// RXO.24.1
-                    anti.setANTITYPENAME( (String) resultss.get( i ).get( 31 ) );// RXO.24.2
+                    Antibiotics anti = new Antibiotics();
+                    anti.setMsgType( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );// MSH.9
+                    anti.setMsgId( (String) resultss.get( i ).get( 1 ) );// MSH.10
+                    anti.setPatientid( (String) resultss.get( i ).get( 2 ) );// PID.2
+                    anti.setIdNo( (String) resultss.get( i ).get( 3 ) );// PID.3.1
+                    anti.setPName( (String) resultss.get( i ).get( 4 ) );// PID.5
+                    anti.setVisitid( (String) resultss.get( i ).get( 5 ) );// PV1.19
+                    anti.setPDept( (String) resultss.get( i ).get( 6 ) );// PV1.3.1
+                    anti.setPWard( (String) resultss.get( i ).get( 7 ) );// PV1.3.2
+                    anti.setPBedNo( (String) resultss.get( i ).get( 8 ) );// PV1.3.3
+                    anti.setStatusId( (String) resultss.get( i ).get( 9 ) );// ORC.1
+                    anti.setOrderNo( (String) resultss.get( i ).get( 10 ) );// ORC.2
+                    anti.setStatus( (String) resultss.get( i ).get( 11 ) );// ORC.5
+                    anti.setOrderTime( (String) resultss.get( i ).get( 12 ) );// ORC.9
+                    anti.setOrderDoctor( (String) resultss.get( i ).get( 13 ) );// ORC.12
+                    anti.setOrderType( (String) resultss.get( i ).get( 14 ) );// ORC.29
+                    anti.setTqNo( (String) resultss.get( i ).get( 15 ) );// TQ1.1
+                    anti.setFrequency( (String) resultss.get( i ).get( 16 ) );// TQ1.3
+                    anti.setFortime( (String) resultss.get( i ).get( 17 ) );// TQ1.6
+                    anti.setStartTime( (String) resultss.get( i ).get( 18 ) );// TQ1.7
+                    anti.setStopTime( (String) resultss.get( i ).get( 19 ) );// TQ1.8
+                    anti.setTqType( (String) resultss.get( i ).get( 20 ) );// TQ1.10
+                    anti.setTqContent( (String) resultss.get( i ).get( 21 ) );// TQ1.11
+                    anti.setOrderText( (String) resultss.get( i ).get( 22 ) );// RXO.1
+                    anti.setDosage( (String) resultss.get( i ).get( 23 ) );// RXO.2
+                    anti.setDosageUnits( (String) resultss.get( i ).get( 24 ) );// RXO.4
+                    anti.setDosageType( (String) resultss.get( i ).get( 25 ) );// RXO.5
+                    anti.setRemark( (String) resultss.get( i ).get( 26 ) );// RXO.20
+                    anti.setRoom( (String) resultss.get( i ).get( 27 ) );// RXO.32
+                    anti.setAdministration( (String) resultss.get( i ).get( 28 ) );// RXR.1
+                    anti.setUseTime( (String) resultss.get( i ).get( 29 ) );// ORC.25
+                    anti.setAntiTypeCode( (String) resultss.get( i ).get( 30 ) );// RXO.24.1
+                    anti.setAntiTypeName( (String) resultss.get( i ).get( 31 ) );// RXO.24.2
+                    anti.setGoal( (String) resultss.get( i ).get( 32 ) );// RXO.24.4
                     antilist.add( anti );
                 }
             }
@@ -474,32 +474,32 @@ public class readXML
                     }
                     resultss.add( results );
                 }
-                ArrayList<TEMPERATURE> tempList = new ArrayList<TEMPERATURE>();
+                ArrayList<Temperature> tempList = new ArrayList<Temperature>();
                 if( resultss.size() >= 1 )
                 {
                     for( int i = 0; i < resultss.size(); i++ )
                     {
-                        TEMPERATURE anti = new TEMPERATURE();
-                        anti.setMSGTYPE( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );
-                        anti.setMSGID( (String) resultss.get( i ).get( 1 ) );
-                        anti.setPATIENTID( (String) resultss.get( i ).get( 2 ) );
-                        anti.setIDNO( (String) resultss.get( i ).get( 3 ) );
-                        anti.setPNAME( (String) resultss.get( i ).get( 4 ) );
-                        anti.setVISITD( (String) resultss.get( i ).get( 5 ) );
-                        anti.setPDEPT( (String) resultss.get( i ).get( 6 ) );
-                        anti.setPWARD( (String) resultss.get( i ).get( 7 ) );
-                        anti.setPBEDNO( (String) resultss.get( i ).get( 8 ) );
-                        anti.setORCID( (String) resultss.get( i ).get( 9 ) );
-                        anti.setORCTYPE( (String) resultss.get( i ).get( 10 ) );
-                        anti.setOBRNO( (String) resultss.get( i ).get( 11 ) );
-                        anti.setOBRNAME( (String) resultss.get( i ).get( 12 ) );
-                        anti.setOBXNO( (String) resultss.get( i ).get( 13 ) );
-                        anti.setOBXTYPE( (String) resultss.get( i ).get( 14 ) );
-                        anti.setOBXNAME( (String) resultss.get( i ).get( 15 ) );
-                        anti.setOBXRESULT( (String) resultss.get( i ).get( 16 ) );
-                        anti.setOBXUNIT( (String) resultss.get( i ).get( 17 ) );
-                        anti.setOBXFLAG( (String) resultss.get( i ).get( 18 ) );
-                        anti.setOBXTIME( (String) resultss.get( i ).get( 19 ) );
+                        Temperature anti = new Temperature();
+                        anti.setMsgType( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );
+                        anti.setMsgId( (String) resultss.get( i ).get( 1 ) );
+                        anti.setPatientid( (String) resultss.get( i ).get( 2 ) );
+                        anti.setIdNo( (String) resultss.get( i ).get( 3 ) );
+                        anti.setName( (String) resultss.get( i ).get( 4 ) );
+                        anti.setVisitid( (String) resultss.get( i ).get( 5 ) );
+                        anti.setDept( (String) resultss.get( i ).get( 6 ) );
+                        anti.setWard( (String) resultss.get( i ).get( 7 ) );
+                        anti.setBedno( (String) resultss.get( i ).get( 8 ) );
+                        anti.setOrcId( (String) resultss.get( i ).get( 9 ) );
+                        anti.setOrcType( (String) resultss.get( i ).get( 10 ) );
+                        anti.setObrNo( (String) resultss.get( i ).get( 11 ) );
+                        anti.setObrName( (String) resultss.get( i ).get( 12 ) );
+                        anti.setObxNo( (String) resultss.get( i ).get( 13 ) );
+                        anti.setObxType( (String) resultss.get( i ).get( 14 ) );
+                        anti.setObxName( (String) resultss.get( i ).get( 15 ) );
+                        anti.setObxResult( (String) resultss.get( i ).get( 16 ) );
+                        anti.setObxUnit( (String) resultss.get( i ).get( 17 ) );
+                        anti.setObxFlag( (String) resultss.get( i ).get( 18 ) );
+                        anti.setObxTime( (String) resultss.get( i ).get( 19 ) );
                         // 筛选只保留体温体重
                         if( resultss.get( i ).get( 15 ).equals( "TW体温" ) || resultss.get( i ).get( 15 ).equals( "TZ体重" ) || resultss.get( i ).get( 15 ).equals( "DBCS大便次数" ) )
                         {
@@ -579,44 +579,44 @@ public class readXML
                         }
                         resultss.add( results );
                     }
-                    ArrayList<LISREPORT> tempList = new ArrayList<LISREPORT>();
+                    ArrayList<LisReport> tempList = new ArrayList<LisReport>();
                     if( resultss.size() >= 1 )
                     {
                         for( int i = 0; i < resultss.size(); i++ )
                         {
-                            LISREPORT anti = new LISREPORT();
-                            anti.setMSGTYPE( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );// MSH.9
-                            anti.setMSGID( (String) resultss.get( i ).get( 1 ) );// MSH.1
-                            anti.setPATIENTID( (String) resultss.get( i ).get( 2 ) );// PID.2
-                            anti.setIDNO( (String) resultss.get( i ).get( 3 ) );// PID.3.1
-                            anti.setPNAME( (String) resultss.get( i ).get( 4 ) );// PID.5
-                            anti.setVISITD( (String) resultss.get( i ).get( 5 ) );// PV1.19
-                            anti.setPDEPT( (String) resultss.get( i ).get( 6 ) );// PV1.3.1
-                            anti.setPWARD( (String) resultss.get( i ).get( 7 ) );// PV1.3.2
-                            anti.setPBEDNO( (String) resultss.get( i ).get( 8 ) );// PV1.3.3
-                            anti.setORCID( (String) resultss.get( i ).get( 9 ) );// ORC.1
-                            anti.setORCUNIT( (String) resultss.get( i ).get( 10 ) );// ORC.16
-                            anti.setORCTYPE( (String) resultss.get( i ).get( 11 ) );// ORC.29
-                            anti.setOBRNO( (String) resultss.get( i ).get( 12 ) );// OBR.1
-                            anti.setREQNO( (String) resultss.get( i ).get( 13 ) );// OBR.2
-                            anti.setREPNO( (String) resultss.get( i ).get( 14 ) );// OBR.3
-                            anti.setOBRNAME( (String) resultss.get( i ).get( 15 ) );// OBR.4
-                            anti.setREPTIME( (String) resultss.get( i ).get( 16 ) );// OBR.22
-                            anti.setOBRSTATUS( (String) resultss.get( i ).get( 17 ) );// OBR.25
-                            anti.setOBRREPNAME( (String) resultss.get( i ).get( 18 ) );// OBR.47.2
-                            anti.setOBXNO( (String) resultss.get( i ).get( 19 ) );// OBX.1
-                            anti.setOBXTYPE( (String) resultss.get( i ).get( 20 ) );// OBX.2
-                            anti.setOBXNAME( (String) resultss.get( i ).get( 21 ) );// OBX.3
-                            anti.setOBXNAMEID( (String) resultss.get( i ).get( 22 ) );// OBX.4
-                            anti.setOBXRESULT( (String) resultss.get( i ).get( 23 ) );// OBX.5
-                            anti.setOBXRANGE( (String) resultss.get( i ).get( 24 ) );// OBX.7
-                            anti.setOBXUNIT( (String) resultss.get( i ).get( 25 ) );// OBX.8
-                            anti.setOBXFLAG( (String) resultss.get( i ).get( 26 ) );// OBX.11
-                            anti.setOBXMETHOD( (String) resultss.get( i ).get( 27 ) );// OBX.17
-                            anti.setREQTIME( (String) resultss.get( i ).get( 28 ) );
-                            anti.setOBXNAMECODE( (String) resultss.get( i ).get( 29 ) );
-                            anti.setSPECIMEN( (String) resultss.get( i ).get( 30 ) );
-                            anti.setRectime( (String) resultss.get( i ).get( 31 ) );
+                            LisReport anti = new LisReport();
+                            anti.setMsgType( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );// MSH.9
+                            anti.setMsgId( (String) resultss.get( i ).get( 1 ) );// MSH.1
+                            anti.setPatientid( (String) resultss.get( i ).get( 2 ) );// PID.2
+                            anti.setIdNo( (String) resultss.get( i ).get( 3 ) );// PID.3.1
+                            anti.setPName( (String) resultss.get( i ).get( 4 ) );// PID.5
+                            anti.setVisitd( (String) resultss.get( i ).get( 5 ) );// PV1.19
+                            anti.setPDept( (String) resultss.get( i ).get( 6 ) );// PV1.3.1
+                            anti.setPWard( (String) resultss.get( i ).get( 7 ) );// PV1.3.2
+                            anti.setPBedno( (String) resultss.get( i ).get( 8 ) );// PV1.3.3
+                            anti.setOrcId( (String) resultss.get( i ).get( 9 ) );// ORC.1
+                            anti.setOrcUnit( (String) resultss.get( i ).get( 10 ) );// ORC.16
+                            anti.setOrcType( (String) resultss.get( i ).get( 11 ) );// ORC.29
+                            anti.setObrNo( (String) resultss.get( i ).get( 12 ) );// OBR.1
+                            anti.setReqNo( (String) resultss.get( i ).get( 13 ) );// OBR.2
+                            anti.setRepNo( (String) resultss.get( i ).get( 14 ) );// OBR.3
+                            anti.setObrName( (String) resultss.get( i ).get( 15 ) );// OBR.4
+                            anti.setRepTime( (String) resultss.get( i ).get( 16 ) );// OBR.22
+                            anti.setObrStatus( (String) resultss.get( i ).get( 17 ) );// OBR.25
+                            anti.setObrRepname( (String) resultss.get( i ).get( 18 ) );// OBR.47.2
+                            anti.setObxNo( (String) resultss.get( i ).get( 19 ) );// OBX.1
+                            anti.setObxType( (String) resultss.get( i ).get( 20 ) );// OBX.2
+                            anti.setObxName( (String) resultss.get( i ).get( 21 ) );// OBX.3
+                            anti.setObxNameId( (String) resultss.get( i ).get( 22 ) );// OBX.4
+                            anti.setObxResult( (String) resultss.get( i ).get( 23 ) );// OBX.5
+                            anti.setObxRange( (String) resultss.get( i ).get( 24 ) );// OBX.7
+                            anti.setObxUnit( (String) resultss.get( i ).get( 25 ) );// OBX.8
+                            anti.setObxFlag( (String) resultss.get( i ).get( 26 ) );// OBX.11
+                            anti.setObxMethod( (String) resultss.get( i ).get( 27 ) );// OBX.17
+                            anti.setReqTime( (String) resultss.get( i ).get( 28 ) );
+                            anti.setObxNameCode( (String) resultss.get( i ).get( 29 ) );
+                            anti.setSpecimen( (String) resultss.get( i ).get( 30 ) );
+                            anti.setRecTime( (String) resultss.get( i ).get( 31 ) );
                             tempList.add( anti );
                         }
                     }
@@ -648,44 +648,44 @@ public class readXML
                         }
                         resultss.add( results );
                     }
-                    ArrayList<LISREPORT> tempList = new ArrayList<LISREPORT>();
+                    ArrayList<LisReport> tempList = new ArrayList<LisReport>();
                     if( resultss.size() >= 1 )
                     {
                         for( int i = 0; i < resultss.size(); i++ )
                         {
-                            LISREPORT anti = new LISREPORT();
-                            anti.setMSGTYPE( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );// MSH.9
-                            anti.setMSGID( (String) resultss.get( i ).get( 1 ) );// MSH.1
-                            anti.setPATIENTID( (String) resultss.get( i ).get( 2 ) );// PID.2
-                            anti.setIDNO( (String) resultss.get( i ).get( 3 ) );// PID.3.1
-                            anti.setPNAME( (String) resultss.get( i ).get( 4 ) );// PID.5
-                            anti.setVISITD( (String) resultss.get( i ).get( 5 ) );// PV1.19
-                            anti.setPDEPT( (String) resultss.get( i ).get( 6 ) );// PV1.3.1
-                            anti.setPWARD( (String) resultss.get( i ).get( 7 ) );// PV1.3.2
-                            anti.setPBEDNO( (String) resultss.get( i ).get( 8 ) );// PV1.3.3
-                            anti.setORCID( (String) resultss.get( i ).get( 9 ) );// ORC.1
-                            anti.setORCUNIT( (String) resultss.get( i ).get( 10 ) );// ORC.16
-                            anti.setORCTYPE( (String) resultss.get( i ).get( 11 ) );// ORC.29
-                            anti.setOBRNO( (String) resultss.get( i ).get( 12 ) );// OBR.1
-                            anti.setREQNO( (String) resultss.get( i ).get( 13 ) );// OBR.2
-                            anti.setREPNO( (String) resultss.get( i ).get( 14 ) );// OBR.3
-                            anti.setOBRNAME( (String) resultss.get( i ).get( 15 ) );// OBR.4
+                            LisReport anti = new LisReport();
+                            anti.setMsgType( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );// MSH.9
+                            anti.setMsgId( (String) resultss.get( i ).get( 1 ) );// MSH.1
+                            anti.setPatientid( (String) resultss.get( i ).get( 2 ) );// PID.2
+                            anti.setIdNo( (String) resultss.get( i ).get( 3 ) );// PID.3.1
+                            anti.setPName( (String) resultss.get( i ).get( 4 ) );// PID.5
+                            anti.setVisitd( (String) resultss.get( i ).get( 5 ) );// PV1.19
+                            anti.setPDept( (String) resultss.get( i ).get( 6 ) );// PV1.3.1
+                            anti.setPWard( (String) resultss.get( i ).get( 7 ) );// PV1.3.2
+                            anti.setPBedno( (String) resultss.get( i ).get( 8 ) );// PV1.3.3
+                            anti.setOrcId( (String) resultss.get( i ).get( 9 ) );// ORC.1
+                            anti.setOrcUnit( (String) resultss.get( i ).get( 10 ) );// ORC.16
+                            anti.setOrcType( (String) resultss.get( i ).get( 11 ) );// ORC.29
+                            anti.setObrNo( (String) resultss.get( i ).get( 12 ) );// OBR.1
+                            anti.setReqNo( (String) resultss.get( i ).get( 13 ) );// OBR.2
+                            anti.setRepNo( (String) resultss.get( i ).get( 14 ) );// OBR.3
+                            anti.setObrName( (String) resultss.get( i ).get( 15 ) );// OBR.4
                             System.out.println( (String) resultss.get( i ).get( 15 ) );
-                            anti.setREPTIME( (String) resultss.get( i ).get( 16 ) );// OBR.22
-                            anti.setOBRSTATUS( (String) resultss.get( i ).get( 17 ) );// OBR.25
-                            anti.setOBRREPNAME( (String) resultss.get( i ).get( 18 ) );// OBR.47.2
-                            anti.setOBXNO( (String) resultss.get( i ).get( 19 ) );// OBX.1
-                            anti.setOBXTYPE( (String) resultss.get( i ).get( 20 ) );// OBX.2
-                            anti.setOBXNAME( (String) resultss.get( i ).get( 21 ) );// OBX.3
-                            anti.setOBXNAMEID( (String) resultss.get( i ).get( 22 ) );// OBX.4
-                            anti.setOBXRESULT( (String) resultss.get( i ).get( 23 ) );// OBX.5
-                            anti.setOBXRANGE( (String) resultss.get( i ).get( 24 ) );// OBX.7
-                            anti.setOBXUNIT( (String) resultss.get( i ).get( 25 ) );// OBX.8
-                            anti.setOBXFLAG( (String) resultss.get( i ).get( 26 ) );// OBX.11
-                            anti.setOBXMETHOD( (String) resultss.get( i ).get( 27 ) );// OBX.17
-                            anti.setREQTIME( (String) resultss.get( i ).get( 28 ) );
-                            anti.setOBXNAMECODE( (String) resultss.get( i ).get( 29 ) );
-                            anti.setSPECIMEN( (String) resultss.get( i ).get( 30 ) );
+                            anti.setRepTime( (String) resultss.get( i ).get( 16 ) );// OBR.22
+                            anti.setObrStatus( (String) resultss.get( i ).get( 17 ) );// OBR.25
+                            anti.setObrRepname( (String) resultss.get( i ).get( 18 ) );// OBR.47.2
+                            anti.setObxNo( (String) resultss.get( i ).get( 19 ) );// OBX.1
+                            anti.setObxType( (String) resultss.get( i ).get( 20 ) );// OBX.2
+                            anti.setObxName( (String) resultss.get( i ).get( 21 ) );// OBX.3
+                            anti.setObxNameId( (String) resultss.get( i ).get( 22 ) );// OBX.4
+                            anti.setObxResult( (String) resultss.get( i ).get( 23 ) );// OBX.5
+                            anti.setObxRange( (String) resultss.get( i ).get( 24 ) );// OBX.7
+                            anti.setObxUnit( (String) resultss.get( i ).get( 25 ) );// OBX.8
+                            anti.setObxFlag( (String) resultss.get( i ).get( 26 ) );// OBX.11
+                            anti.setObxMethod( (String) resultss.get( i ).get( 27 ) );// OBX.17
+                            anti.setReqTime( (String) resultss.get( i ).get( 28 ) );
+                            anti.setObxNameCode( (String) resultss.get( i ).get( 29 ) );
+                            anti.setSpecimen( (String) resultss.get( i ).get( 30 ) );
                             tempList.add( anti );
                         }
                     }
@@ -718,43 +718,43 @@ public class readXML
                     }
                     resultss.add( results );
 
-                    ArrayList<OPERATIONS> tempList = new ArrayList<OPERATIONS>();
+                    ArrayList<Operation> tempList = new ArrayList<Operation>();
                     if( resultss.size() >= 1 )
                     {
                         for( int i = 0; i < resultss.size(); i++ )
                         {
-                            OPERATIONS anti = new OPERATIONS();
-                            anti.setMSGTYPE( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );
-                            anti.setMSGID( (String) resultss.get( i ).get( 1 ) );
-                            anti.setSAPPLYID( (String) resultss.get( i ).get( 2 ) );
-                            anti.setSAPPLYREASON( (String) resultss.get( i ).get( 3 ) );
-                            anti.setSAPPLYTIME( (String) resultss.get( i ).get( 4 ) );
-                            anti.setSDEPT( (String) resultss.get( i ).get( 5 ) );
-                            anti.setPATIENTID( (String) resultss.get( i ).get( 6 ) );
-                            anti.setPTYPE( (String) resultss.get( i ).get( 7 ) );
-                            anti.setVISITID( (String) resultss.get( i ).get( 8 ) );
-                            anti.setOPERNO( (String) resultss.get( i ).get( 9 ) );
-                            anti.setOPERCODE( (String) resultss.get( i ).get( 10 ) );
-                            anti.setOPERNAME( (String) resultss.get( i ).get( 11 ) );
-                            anti.setOPERCLASS( (String) resultss.get( i ).get( 12 ) );
-                            anti.setOPERSTARTTIME( (String) resultss.get( i ).get( 13 ) );
-                            anti.setQUANTUM( (String) resultss.get( i ).get( 14 ) );
-                            anti.setQUANTUMUNIT( (String) resultss.get( i ).get( 15 ) );
-                            anti.setLOCATION( (String) resultss.get( i ).get( 16 ) );
-                            anti.setISGRADE( (String) resultss.get( i ).get( 17 ) );
-                            anti.setOPERENDTIME( (String) resultss.get( i ).get( 18 ) );
-                            anti.setWOUNDGRADE( (String) resultss.get( i ).get( 19 ) );
-                            anti.setNNIS( (String) resultss.get( i ).get( 20 ) );
-                            anti.setHEAL( (String) resultss.get( i ).get( 21 ) );
-                            anti.setOPERTYPE( (String) resultss.get( i ).get( 22 ) );
-                            anti.setEMBED( (String) resultss.get( i ).get( 23 ) );
-                            anti.setENDOSCOPIC( (String) resultss.get( i ).get( 24 ) );
-                            anti.setBLOODOUT( (String) resultss.get( i ).get( 25 ) );
-                            anti.setBLOODIN( (String) resultss.get( i ).get( 26 ) );
-                            anti.setANESTHESIAMETHOD( (String) resultss.get( i ).get( 27 ) );
-                            anti.setASA( (String) resultss.get( i ).get( 28 ) );
-                            anti.setROOM( (String) resultss.get( i ).get( 29 ) );
-                            anti.setTAICI( (String) resultss.get( i ).get( 30 ) );
+                            Operation anti = new Operation();
+                            anti.setMsgType( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );
+                            anti.setMsgId( (String) resultss.get( i ).get( 1 ) );
+                            anti.setSapplyId( (String) resultss.get( i ).get( 2 ) );
+                            anti.setSapplyReason( (String) resultss.get( i ).get( 3 ) );
+                            anti.setSapplyTime( (String) resultss.get( i ).get( 4 ) );
+                            anti.setSDept( (String) resultss.get( i ).get( 5 ) );
+                            anti.setPatientid( (String) resultss.get( i ).get( 6 ) );
+                            anti.setPType( (String) resultss.get( i ).get( 7 ) );
+                            anti.setVisitid( (String) resultss.get( i ).get( 8 ) );
+                            anti.setOperNo( (String) resultss.get( i ).get( 9 ) );
+                            anti.setOperCode( (String) resultss.get( i ).get( 10 ) );
+                            anti.setOperName( (String) resultss.get( i ).get( 11 ) );
+                            anti.setOperClass( (String) resultss.get( i ).get( 12 ) );
+                            anti.setOperStarttime( (String) resultss.get( i ).get( 13 ) );
+                            anti.setQuantum( (String) resultss.get( i ).get( 14 ) );
+                            anti.setQuantumUnit( (String) resultss.get( i ).get( 15 ) );
+                            anti.setLocation( (String) resultss.get( i ).get( 16 ) );
+                            anti.setGrade( (String) resultss.get( i ).get( 17 ) );
+                            anti.setOperEndtime( (String) resultss.get( i ).get( 18 ) );
+                            anti.setWoundGrade( (String) resultss.get( i ).get( 19 ) );
+                            anti.setNnis( (String) resultss.get( i ).get( 20 ) );
+                            anti.setHeal( (String) resultss.get( i ).get( 21 ) );
+                            anti.setOperType( (String) resultss.get( i ).get( 22 ) );
+                            anti.setEmbed( (String) resultss.get( i ).get( 23 ) );
+                            anti.setEndoscopic( (String) resultss.get( i ).get( 24 ) );
+                            anti.setBloodout( (String) resultss.get( i ).get( 25 ) );
+                            anti.setBloodin( (String) resultss.get( i ).get( 26 ) );
+                            anti.setAnesthesiaMethod( (String) resultss.get( i ).get( 27 ) );
+                            anti.setAsa( (String) resultss.get( i ).get( 28 ) );
+                            anti.setRoom( (String) resultss.get( i ).get( 29 ) );
+                            anti.setTableNo( (String) resultss.get( i ).get( 30 ) );
                             for( int aip = 1; aip <= lenAIP; aip++ )
                             {
                                 String replace = "/HL7Message/" + returnReplace( "AIP.4.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
@@ -766,8 +766,8 @@ public class readXML
                                     String replacefpacode = "/HL7Message/" + returnReplace( "AIP.3.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
                                     String fpa = (String) xpath.evaluate( replacefpa, document, XPathConstants.STRING );
                                     String fpacode = (String) xpath.evaluate( replacefpacode, document, XPathConstants.STRING );
-                                    anti.setSURGEON( fpa );
-                                    anti.setSURGEONCODE( fpacode );
+                                    anti.setSurgeon( fpa );
+                                    anti.setSurgeonCode( fpacode );
 
                                 }
                                 else if( temp.equals( "FPB" ) )
@@ -776,8 +776,8 @@ public class readXML
                                     String replacefpbcode = "/HL7Message/" + returnReplace( "AIP.3.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
                                     String fpb = (String) xpath.evaluate( replacefpb, document, XPathConstants.STRING );
                                     String fpbcode = (String) xpath.evaluate( replacefpbcode, document, XPathConstants.STRING );
-                                    anti.setFIRSTAS( fpb );
-                                    anti.setFIRSTASCODE( fpbcode );
+                                    anti.setFirstAs( fpb );
+                                    anti.setFirstAsCode( fpbcode );
 
                                 }
                                 else if( temp.equals( "FPC" ) )
@@ -786,8 +786,8 @@ public class readXML
                                     String replacefpccode = "/HL7Message/" + returnReplace( "AIP.3.1" ).replace( "AIP/", "AIP[" + aip + "]/" );
                                     String fpc = (String) xpath.evaluate( replacefpc, document, XPathConstants.STRING );
                                     String fpccode = (String) xpath.evaluate( replacefpccode, document, XPathConstants.STRING );
-                                    anti.setANESTHESIA( fpc );
-                                    anti.setANESTHESIACODE( fpccode );
+                                    anti.setAnesthesia( fpc );
+                                    anti.setAnesthesiaCode( fpccode );
                                 }
                             }
 
@@ -826,39 +826,39 @@ public class readXML
                     }
                     resultss.add( results );
                 }
-                ArrayList<XRAY> tempList = new ArrayList<XRAY>();
+                ArrayList<Xray> tempList = new ArrayList<Xray>();
                 if( resultss.size() >= 1 )
                 {
                     for( int i = 0; i < resultss.size(); i++ )
                     {
-                        XRAY anti = new XRAY();
-                        anti.setMSGTYPE( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );
-                        anti.setMSGID( (String) resultss.get( i ).get( 1 ) );
-                        anti.setPATIENTID( (String) resultss.get( i ).get( 2 ) );
-                        anti.setIDNO( (String) resultss.get( i ).get( 3 ) );
-                        anti.setPNAME( (String) resultss.get( i ).get( 4 ) );
-                        anti.setVISITD( (String) resultss.get( i ).get( 5 ) );
-                        anti.setPDEPT( (String) resultss.get( i ).get( 6 ) );
-                        anti.setPWARD( (String) resultss.get( i ).get( 7 ) );
-                        anti.setPBEDNO( (String) resultss.get( i ).get( 8 ) );
-                        anti.setORCID( (String) resultss.get( i ).get( 9 ) );
-                        anti.setORCNO( (String) resultss.get( i ).get( 10 ) );
-                        anti.setORCTYPE( (String) resultss.get( i ).get( 11 ) );
-                        anti.setOBRNO( (String) resultss.get( i ).get( 12 ) );
-                        anti.setREPNO( (String) resultss.get( i ).get( 13 ) );
-                        anti.setOBRNAME( (String) resultss.get( i ).get( 14 ) );
-                        anti.setREPTIME( (String) resultss.get( i ).get( 15 ) );
-                        anti.setOBRTYPE( (String) resultss.get( i ).get( 16 ) );
-                        anti.setOBRSTATUS( (String) resultss.get( i ).get( 17 ) );
-                        anti.setOBRREPNAME( (String) resultss.get( i ).get( 18 ) );
-                        anti.setOBXNO( (String) resultss.get( i ).get( 19 ) );
-                        anti.setOBXTYPE( (String) resultss.get( i ).get( 20 ) );
-                        anti.setOBXNAME( (String) resultss.get( i ).get( 21 ) );
-                        anti.setOBXRESULT1( (String) resultss.get( i ).get( 22 ) );
-                        anti.setOBXRESULT2( (String) resultss.get( i ).get( 23 ) );
-                        anti.setOBXUNIT( (String) resultss.get( i ).get( 24 ) );
-                        anti.setOBXFLAG( (String) resultss.get( i ).get( 25 ) );
-                        anti.setOBXMETHOD( (String) resultss.get( i ).get( 26 ) );
+                        Xray anti = new Xray();
+                        anti.setMsgType( (String) resultss.get( i ).get( 0 ) + "||" + file.getName() );
+                        anti.setMsgId( (String) resultss.get( i ).get( 1 ) );
+                        anti.setPatientid( (String) resultss.get( i ).get( 2 ) );
+                        anti.setIdNo( (String) resultss.get( i ).get( 3 ) );
+                        anti.setName( (String) resultss.get( i ).get( 4 ) );
+                        anti.setVisitd( (String) resultss.get( i ).get( 5 ) );
+                        anti.setDept( (String) resultss.get( i ).get( 6 ) );
+                        anti.setWard( (String) resultss.get( i ).get( 7 ) );
+                        anti.setBedno( (String) resultss.get( i ).get( 8 ) );
+                        anti.setOrcId( (String) resultss.get( i ).get( 9 ) );
+                        anti.setOrcNo( (String) resultss.get( i ).get( 10 ) );
+                        anti.setOrcType( (String) resultss.get( i ).get( 11 ) );
+                        anti.setObrNo( (String) resultss.get( i ).get( 12 ) );
+                        anti.setRepNo( (String) resultss.get( i ).get( 13 ) );
+                        anti.setObrName( (String) resultss.get( i ).get( 14 ) );
+                        anti.setRepTime( (String) resultss.get( i ).get( 15 ) );
+                        anti.setObrType( (String) resultss.get( i ).get( 16 ) );
+                        anti.setObrStatus( (String) resultss.get( i ).get( 17 ) );
+                        anti.setObrRepName( (String) resultss.get( i ).get( 18 ) );
+                        anti.setObxNo( (String) resultss.get( i ).get( 19 ) );
+                        anti.setObxType( (String) resultss.get( i ).get( 20 ) );
+                        anti.setObxName( (String) resultss.get( i ).get( 21 ) );
+                        anti.setObxResult1( (String) resultss.get( i ).get( 22 ) );
+                        anti.setObxResult2( (String) resultss.get( i ).get( 23 ) );
+                        anti.setObxUnit( (String) resultss.get( i ).get( 24 ) );
+                        anti.setObxFlag( (String) resultss.get( i ).get( 25 ) );
+                        anti.setObxMethod( (String) resultss.get( i ).get( 26 ) );
                         tempList.add( anti );
                     }
                 }

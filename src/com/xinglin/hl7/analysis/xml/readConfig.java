@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.xinglin.hl7.analysis.analysisXML;
+package com.xinglin.hl7.analysis.xml;
 
 import java.io.File;
 import java.io.IOException;
