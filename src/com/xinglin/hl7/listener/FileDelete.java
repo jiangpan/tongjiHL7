@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.xinglin.hl7.listener;
 
 import java.io.File;
@@ -9,10 +6,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-/**
- * @author baobao
- *
- */
 public class FileDelete
 {
     private static Logger logger = Logger.getLogger( FileDelete.class.getName() );
