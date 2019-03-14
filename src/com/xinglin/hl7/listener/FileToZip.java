@@ -22,13 +22,9 @@ import org.apache.log4j.Logger;
 /**
  * 将文件夹下面的文件
  * 打包成zip压缩文件
- * 
- * @author baobao
- *
  */
 public final class FileToZip
 {
-
     private static Logger logger = Logger.getLogger( FileToZip.class.getName() );
 
     private FileToZip()
@@ -37,20 +33,20 @@ public final class FileToZip
 
     public static List<File> getFilesByPathName( String sourceFilePath, String name )
     {
-        long                    start  = System.currentTimeMillis();
-        List<File>              files  = new ArrayList<File>();
+        long start = System.currentTimeMillis();
+        List<File> files = new ArrayList<File>();
         SimpleFileVisitor<Path> finder = new SimpleFileVisitor<Path>(){
-                                           @Override
-                                           public FileVisitResult visitFile( Path file, BasicFileAttributes attrs ) throws IOException
-                                           {
-                                               File f = file.toFile();
-                                               if( f.getName().indexOf( name ) > -1 )
-                                               {
-                                                   files.add( f );
-                                               }
-                                               return super.visitFile( file, attrs );
-                                           }
-                                       };
+            @Override
+            public FileVisitResult visitFile( Path file, BasicFileAttributes attrs ) throws IOException
+            {
+                File f = file.toFile();
+                if( f.getName().indexOf( name ) > -1 )
+                {
+                    files.add( f );
+                }
+                return super.visitFile( file, attrs );
+            }
+        };
 
         try
         {
@@ -77,11 +73,11 @@ public final class FileToZip
     {
         File sourceFile = new File( sourceFilePath );
 
-        FileInputStream     fis            = null;
-        BufferedInputStream bis            = null;
-        FileOutputStream    fos            = null;
-        ZipOutputStream     zos            = null;
-        ArrayList<String>   deleteFileName = new ArrayList<String>();
+        FileInputStream fis = null;
+        BufferedInputStream bis = null;
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        ArrayList<String> deleteFileName = new ArrayList<String>();
         if( sourceFile.exists() == false )
         {
             logger.error( "【FileToZip】" + "待压缩的文件目录：" + sourceFilePath + "不存在." );
