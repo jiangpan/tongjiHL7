@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,30 +7,19 @@ import java.util.ArrayList;
 import com.DAO.IBasicinfoDAO;
 import com.VO.BASICINFO;
 
-/**
- * @author baobao
- *
- */
 public class BasicinfoDAOimpl implements IBasicinfoDAO
 {
-
-    /**
-     * 
-     */
-
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public BasicinfoDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<BASICINFO> basicinfo ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean flag = false;
 
         pstmt = conn.prepareStatement( " INSERT INTO HL7_BASICINFO (MSGTYPE, MSGID, ACTIONTYPE, ACTIONTIME, PATIENTID, IDNO, PNAME, PBRITHDATE, PSEX, PADDRESS,"
@@ -88,5 +74,4 @@ public class BasicinfoDAOimpl implements IBasicinfoDAO
 
         return flag;
     }
-
 }

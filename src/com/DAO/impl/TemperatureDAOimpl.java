@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,30 +7,19 @@ import java.util.ArrayList;
 import com.DAO.ITemperatureDAO;
 import com.VO.TEMPERATURE;
 
-/**
- * @author baobao
- *
- */
 public class TemperatureDAOimpl implements ITemperatureDAO
 {
-
-    /**
-     * 
-     */
-
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public TemperatureDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<TEMPERATURE> temp ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean result = false;
         pstmt = conn.prepareStatement( " INSERT INTO HL7_OBX (MSGTYPE, MSGID, PATIENTID, IDNO, PNAME, VISITD, PDEPT, PWARD, PBEDNO, ORCID, "
                 + "ORCTYPE, OBRNO, OBRNAME, OBXNO, OBXTYPE, OBXNAME, OBXRESULT, OBXUNIT, OBXFLAG, OBXTIME, LASTMODIFYTIME) "
@@ -73,5 +59,4 @@ public class TemperatureDAOimpl implements ITemperatureDAO
         }
         return result;
     }
-
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,30 +7,19 @@ import java.util.ArrayList;
 import com.DAO.IDiagnosisDAO;
 import com.VO.DIAGNOSIS;
 
-/**
- * @author baobao
- *
- */
 public class DiagnosisDAOimpl implements IDiagnosisDAO
 {
-
-    /**
-     * 
-     */
-
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public DiagnosisDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<DIAGNOSIS> diagnosis ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean result = false;
 
         pstmt = conn.prepareStatement( "INSERT INTO HL7_DIAGNOSIS (MSGTYPE, MSGID, PNAME, PATIENT_ID, VISIT_ID, DIAGNOSIS_NO, DIAGNOSIS_TYPE, "
@@ -67,5 +53,4 @@ public class DiagnosisDAOimpl implements IDiagnosisDAO
 
         return result;
     }
-
 }

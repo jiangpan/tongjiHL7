@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,30 +7,19 @@ import java.util.ArrayList;
 import com.DAO.IAntibioticsDAO;
 import com.VO.ANTIBIOTICS;
 
-/**
- * @author baobao
- *
- */
 public class AntibioticsDAOimpl implements IAntibioticsDAO
 {
-
-    /**
-     * 
-     */
-
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public AntibioticsDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<ANTIBIOTICS> antibiotics ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean result = false;
 
         pstmt = conn.prepareStatement( " INSERT INTO HL7_ANTIBIOTICS (MSGTYPE, MSGID, PATIENTID, IDNO, PNAME, VISITD, PDEPT,"
@@ -89,8 +75,6 @@ public class AntibioticsDAOimpl implements IAntibioticsDAO
                 result = true;
             }
         }
-
         return result;
     }
-
 }

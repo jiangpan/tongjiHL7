@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,29 +7,19 @@ import java.util.ArrayList;
 import com.DAO.ILisreportDAO;
 import com.VO.LISREPORT;;
 
-/**
- * @author baobao
- *
- */
 public class LisreportDAOimpl implements ILisreportDAO
 {
-
-    /**
-     * 
-     */
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public LisreportDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<LISREPORT> temp ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean result = false;
 
         pstmt = conn.prepareStatement( " INSERT INTO HL7_LISREPORT (MSGTYPE, MSGID, PATIENTID, IDNO, PNAME, VISITD, PDEPT, PWARD, "
@@ -70,7 +57,6 @@ public class LisreportDAOimpl implements ILisreportDAO
             pstmt.setString( 26, ( (LISREPORT) temp.get( i ) ).getOBXUNIT() );// OBX.8
             pstmt.setString( 27, ( (LISREPORT) temp.get( i ) ).getOBXFLAG() );// OBX.11
             pstmt.setString( 28, ( (LISREPORT) temp.get( i ) ).getOBXMETHOD() );// OBX.17
-
             pstmt.setString( 29, ( (LISREPORT) temp.get( i ) ).getREQTIME() );// OBX.17
             pstmt.setString( 30, ( (LISREPORT) temp.get( i ) ).getOBXNAMECODE() );// OBX.3.2
             pstmt.setString( 31, ( (LISREPORT) temp.get( i ) ).getSPECIMEN() );// OBr.15
@@ -87,5 +73,4 @@ public class LisreportDAOimpl implements ILisreportDAO
         }
         return result;
     }
-
 }

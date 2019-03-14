@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.DAO.impl;
 
 import java.sql.Connection;
@@ -10,30 +7,19 @@ import java.util.ArrayList;
 import com.DAO.IOperationsDAO;
 import com.VO.OPERATIONS;;
 
-/**
- * @author baobao
- *
- */
 public class OperationsDAOimpl implements IOperationsDAO
 {
-
-    /**
-     * 
-     */
-
     private Connection        conn  = null;
     private PreparedStatement pstmt = null;
 
     public OperationsDAOimpl( Connection conn )
     {
-        // TODO Auto-generated constructor stub
         this.conn = conn;
     }
 
     @Override
     public boolean doCreate( ArrayList<OPERATIONS> operations ) throws Throwable
     {
-        // TODO Auto-generated method stub
         boolean result = false;
         pstmt = conn.prepareStatement( " INSERT INTO HL7_OPERATIONS (MSGTYPE, MSGID, SAPPLYID, SAPPLYREASON, SAPPLYTIME, SDEPT, PATIENTID, PTYPE, "
                 + "VISITID, OPERNO, OPERCODE, OPERNAME, OPERCLASS, OPERSTARTTIME, QUANTUM, QUANTUMUNIT, LOCATION, ISGRADE, OPERENDTIME, WOUNDGRADE, "
@@ -79,7 +65,6 @@ public class OperationsDAOimpl implements IOperationsDAO
             pstmt.setString( 34, ( (OPERATIONS) operations.get( i ) ).getAIPSNAME() );
             pstmt.setString( 35, ( (OPERATIONS) operations.get( i ) ).getAIPSCODE() );
             pstmt.setString( 36, ( (OPERATIONS) operations.get( i ) ).getAIPSTYPE() );
-
             pstmt.setString( 37, ( (OPERATIONS) operations.get( i ) ).getSURGEON() );
             pstmt.setString( 38, ( (OPERATIONS) operations.get( i ) ).getSURGEONCODE() );
             pstmt.setString( 39, ( (OPERATIONS) operations.get( i ) ).getFIRSTAS() );
@@ -98,5 +83,4 @@ public class OperationsDAOimpl implements IOperationsDAO
         }
         return result;
     }
-
 }
