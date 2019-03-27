@@ -44,6 +44,27 @@ public class readXML
     public static void main( String[] args ) throws Throwable
     {
         insertXMl();
+        // moveFiles();
+    }
+
+    public static void makedirs( File file )
+    {
+        if( file == null )
+        {
+            return;
+        }
+
+        if( file.exists() )
+        {
+            return;
+        }
+
+        File parent = file.getParentFile();
+
+        if( parent != null )
+        {
+            parent.mkdirs();
+        }
     }
 
     public static boolean MoveFile( File filesource, String filedns )
@@ -51,7 +72,17 @@ public class readXML
         boolean flag = false;
         try
         {
-            if( filesource.renameTo( new File( filedns + filesource.getName() ) ) )
+            File newFile = new File( filedns + filesource.getName() );
+            if( newFile.exists() == false )
+            {
+                File parent = newFile.getParentFile();
+
+                if( parent != null )
+                {
+                    parent.mkdirs();
+                }
+            }
+            if( filesource.renameTo( newFile ) )
             {
                 flag = true;
             }
@@ -63,11 +94,36 @@ public class readXML
         return flag;
     }
 
+    public static void moveFiles()
+    {
+        long startTime = System.currentTimeMillis();
+        String sour = "d:/runtime/hl7/typexml/";
+        String dns = "d:/runtime/hl7/rerun/";
+        File folder = new File( sour );
+        File[] files = folder.listFiles();
+        if( files.length != 0 )
+        {
+            logger.info( "路径下文件共有" + files.length + "个" );
+            Stream.of( files )
+                    .parallel()
+                    .forEach( file -> {
+
+                        String time = file.getName().split( "_" )[2];
+
+                        makedirs( new File( dns + time + "/" ) );
+                        boolean moveresult = MoveFile( file, dns + time + "/" );
+                        if( moveresult == false )
+                        {
+                            logger.error( "XMl数据移动失败" + file.getName() );
+                        }
+                    } );
+        }
+        long endTime = System.currentTimeMillis();
+        logger.info( "程序运行时间： " + ( endTime - startTime ) + "ms" );
+    }
+
     public static void insertXMl() throws Throwable
     {
-        // SimpleDateFormat df = new SimpleDateFormat( "yyyyMMdd" );
-        // String nowDay = df.format( new Date() );
-
         long startTime = System.currentTimeMillis();
         String sour = "d:/runtime/hl7/rerun/xml/";
         String dns = "d:/runtime/hl7/rerun/finished/";
@@ -76,19 +132,11 @@ public class readXML
         if( files.length != 0 )
         {
             logger.info( "路径下文件共有" + files.length + "个" );
-            // int i = 0;
-
             Stream.of( files )
                     .parallel()
                     .forEach( file -> {
                         try
                         {
-                            // i++;
-                            // logger.info( "当前第" + i + "个" );
-                            // if( nowDay.compareTo( file.getName().split( "_" )[2] ) <= 0 )
-                            // {
-                            // continue;
-                            // }
                             String typename = file.getName().split( "_" )[0] + file.getName().split( "_" )[1];
 
                             // logger.info( "当前处理类型为：" + typename );
@@ -686,6 +734,7 @@ public class readXML
                             anti.setReqTime( (String) resultss.get( i ).get( 28 ) );
                             anti.setObxNameCode( (String) resultss.get( i ).get( 29 ) );
                             anti.setSpecimen( (String) resultss.get( i ).get( 30 ) );
+                            anti.setRecTime( (String) resultss.get( i ).get( 31 ) );
                             tempList.add( anti );
                         }
                     }
